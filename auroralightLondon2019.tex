@@ -1,0 +1,383 @@
+\documentclass[shadesubsections,trans,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+
+\title{\LARGE{Components of recent universal SNARKs}}    % Enter your title between curly braces
+\author{\Large{Ariel Gabizon}}                 % Enter your name between curly braces
+\institute{\normalsize{Protocol Labs}}      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Talk for 30 minutes} % Add notes to yourself that will be displayed when
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+%\begin{frame}
+  %\tableofcontents
+%\end{frame}
+
+
+\begin{frame}
+  \frametitle{30 seconds of philosophy: \\ SNARKs and the meaning of life}   % Insert frame title between curly braces
+
+  
+  As the world gets increasingly distributed and digital, SNARKs help us ``keep a grip on reality'', by ensuring the data we receive is anchored in reality.\\
+ \vspace{0.4in}
+ In this context, they are vast generalization of hashes and digital signatures.
+ \vspace{0.4in}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Evaluating prover polynomials succinctly}   % Insert frame title between curly braces
+Since the beginning of time (LFKN, 1990) humanity has been trying to verify prover polynomial evaluations.\\
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Evaluating prover polynomials succinctly}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+ \vspace{0.4in}
+\textbf{Verifer:} - ``Choose a degree 10 polynomial $f$ and keep it in your head''\\
+\textbf{Prover:} - ``OK''\\
+ \textbf{Verifer:} - ``What is $f(7)$?''\\
+\textbf{Prover:} - ``$10$''\\
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Evaluating prover polynomials succinctly}   % Insert frame title between curly braces
+ 
+\textbf{The hard-working honest way} - Low degree testing [BFL91,...] \small{(also PCPPs/IOPPs)}
+%(\footnotesize{(and PCPPs,IOPPS)}) 
+
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Evaluating prover polynomials succinctly}   % Insert frame title between curly braces
+%Since the beginning of time (1989) humanity has been trying to verify prover polynomial evaluations.
+ %\vspace{0.4in}
+ 
+\textbf{The hard-working honest way} - Low degree testing/PCPP/IOPPs
+
+ \vspace{0.4in}
+\textbf{The correct* way} - Polynomial commitment scheme (with SRS).
+
+
+\vspace{0.8in}
+\footnotesize{*The opinions expressed in this presentation are objective reality}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Notation:``an encoding of $x$''}   % Insert frame title between curly braces
+%Since the beginning of time (1989) humanity has been trying to verify prover polynomial evaluations.
+ %\vspace{0.4in}
+ 
+%\textbf{Notation:}
+$\enc{x}\defeq x\cdot g = g+\ldots+g$ ($x$ times).
+ \vspace{0.4in}
+ 
+\end{frame}
+
+\begin{frame}
+\frametitle{Notation:``an encoding of $x$''}   % Insert frame title between curly braces
+%Since the beginning of time (1989) humanity has been trying to verify prover polynomial evaluations.
+ %\vspace{0.4in}
+ 
+%\textbf{Notation:}
+$\enc{x}\defeq x\cdot g = g+\ldots+g$ ($x$ times).\\
+ \vspace{1in}
+\emph{\small{You can imagine it means $g^x$, if it helps you sleep better.}} 
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{The KZG polynomial commitment scheme}   % Insert frame title between curly braces
+ SRS: \enc{1},\enc{x},\ldots,\enc{x^d}, for random $x\in \F$.\\
+ \vspace{0.4in}
+ $f(X) = \sum_{i=0}^d a_i X^i$\\
+ \vspace{0.4in}
+ $\cm(f)\defeq  \sum_{i=0}^d a_i \enc{x^i}=  \enc{f(x)}$\\
+ \vspace{0.4in}
+ 
+\end{frame}
+\begin{frame}
+ SRS: \enc{1},\enc{x},\ldots,\enc{x^d},\\
+ for random $x\in \F$.
+ \vspace{0.4in}
+ 
+ $\cm(f)\defeq   \enc{f(x)}$\\
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+$h(X)\defeq \frac{f(X)-f(i)}{X-i}$
+ \vspace{0.4in}
+ 
+\end{frame}
+
+
+\begin{frame}
+ $\cm(f)\defeq   \enc{f(x)}$\\
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+ \vspace{0.4in}
+\textbf{exercise} - using pairing, define:\\
+ \vspace{0.2in}
+ $\verify{\cm,\pi,z,i}$,
+ where $z$ is allegedly $f(i)$
+ \end{frame}
+
+
+
+
+\begin{frame}
+
+ $\cm(f)\defeq   \enc{f(x)}$\\
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+ \vspace{0.4in}
+ $\verify{\cm,\pi,z,i}:$
+\[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+\end{frame}
+
+
+ 
+
+
+\begin{frame}
+
+ $\cm(f)\defeq   \enc{f(x)}$\\
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+ \vspace{0.4in}
+ $\verify{\cm,\pi,z,i}:$
+\[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+ \vspace{0.4in}
+\textbf{Thm}{\footnotesize{[KZG,MBKM]}}: \emph{This works.}
+ \end{frame}
+
+\begin{frame}
+  \frametitle{Application: Proof of retrievability}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Application: Proof of retrievability}
+ \emph{Server:} Commit to file as coefficients \set{a_0,\ldots,a_d} of polynomial $f$.\\
+ \vspace{0.4in}
+ \emph{Client:} Time-to-time query $f$ at a random point $r$.\\
+ \vspace{0.4in}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Application: Proof of retrievability}
+ \emph{Server:} Commit to file as coefficients \set{a_0,\ldots,a_d} of polynomial $f$.\\
+ \vspace{0.4in}
+ \emph{Client:} Time-to-time query $f$ at a random point $r$.\\
+ \vspace{0.4in}
+ \emph{Probability of server computing $f(r)$ correctly w/o remembering all coeffs of $f$ is negligible.}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Application: The Sonic helper \small{[MBKM19]}}
+ Bi-variate $S(X,Y)$, evaluation points \sett{(x_j,y_j)}{j\in \set{1..t}}, values \set{z_j} \\
+ \end{frame}
+
+\begin{frame}
+  \frametitle{Application: The Sonic helper \small{[MBKM19]}}
+ Bi-variate $S(X,Y)$, evaluation points \sett{(x_j,y_j)}{j\in \set{1..t}}, values \set{z_j} \\
+ \vspace{0.4in}
+ Helper $\helper$ wants to convince verifier $\ver$ that $\forall j\in \set{1..t}$, $S(x_j,y_j)=z_j$.\\
+ \vspace{0.4in}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Application: The Sonic helper \small{[MBKM19]}}
+ Bi-variate $S(X,Y)$, evaluation points \sett{(x_j,y_j)}{j\in \set{1..t}}, values \set{z_j} \\
+ \vspace{0.4in}
+ Helper $\helper$ wants to convince verifier $\ver$ that $\forall j\in \set{1..t}$, $S(x_j,y_j)=z_j$.\\
+ \vspace{0.4in}
+$\ver$'s work: only \emph{one} evaluation of $S$!
+ \end{frame}
+
+ 
+\begin{frame}
+  \frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+ \end{enumerate}
+ 
+ \end{frame}
+\begin{frame}
+  \frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+ \end{enumerate}
+ \vspace{0.4in}
+\emph{If $\helper$ would convince $\ver$ $S_j$'s are correct, he could just open them at $x_j$. } 
+ \end{frame}
+
+\begin{frame}
+  \frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+\item $\ver$ chooses random $u\in \F$.
+\item $\helper$ sends $C\defeq \cm(S(u,Y))$.
+
+  \end{enumerate}
+ \vspace{0.4in}
+ \end{frame}
+
+ 
+ \begin{frame}
+  \frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+\item $\ver$ chooses random $u\in \F$.
+\item $\helper$ sends $C\defeq \cm(S(u,Y))$.
+\item $\forall j$, $\helper$ opens $C$ at $y_j$ and $S_j$ at $u$. $\ver$ checks they open to same value.
+  \end{enumerate}
+ \vspace{0.4in}
+\emph{At this point $\ver$ knows $S_j$'s are correct \textbf{if} $C$ is correct.}
+ \end{frame}
+
+ \begin{frame}
+  \frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+\item $\ver$ chooses random $u\in \F$.
+\item $\helper$ sends $C\defeq \cm(S(u,Y))$.
+\item $\forall j$, $\helper$ opens $C$ at $y_j$ and $S_j$ at $x_j$. $\ver$ checks they open to same value.
+\item $\ver$ chooses random $v\in \F$ and computes $s(u,v)$.
+\end{enumerate}
+ \vspace{0.4in}
+ \end{frame}
+
+ 
+ 
+ \begin{frame}
+\frametitle{The Sonic helper \small{[MBKM19]}}
+ \begin{enumerate}
+  \item $\forall j$, $\helper$ sends $S_j \defeq \cm(S(X,y_j))$.
+\item $\ver$ chooses random $u\in \F$.
+\item $\helper$ sends $C\defeq \cm(S(u,Y))$.
+\item $\forall j$, $\helper$ opens $C$ at $y_j$ and $S_j$ at $x_j$. $\ver$ checks they open to same value.
+\item $\ver$ chooses random $v\in \F$ and computes $s(u,v)$.
+\item $\helper$ opens $C$ at $v$, and $\ver$ checks it opens to $s(u,v)$.
+\end{enumerate}
+ \vspace{0.4in}
+ \end{frame}
+
+ %\small{[BCRSV19, G19]}
+  \begin{frame}
+\frametitle{3rd application: sumchecks }
+ \end{frame}
+ 
+  \begin{frame}
+\frametitle{3rd application: sumchecks}
+$\prv$ has polynomial $f$. $H\subset \F$. \\
+ \vspace{0.4in}
+$\ver$ wants to check:
+\[\sum_{x\in H} f(x) =0\]
+
+\end{frame}
+
+
+  \begin{frame}
+\frametitle{The Aurora trick for sumcheck \small{[BCRSV19]}}
+\begin{lemma}
+ When $H\subset \F$ is a multiplicative subgroup of size $n$, and $deg(g)<n$
+\[\sum_{x\in H} g(x) =0\]
+iff $g$ has constant coefficient $0$.
+\end{lemma}
+ \vspace{0.4in}
+
+\end{frame}
+
+
+  \begin{frame}
+\frametitle{The Aurora trick for sumcheck \small{[BCRSV19]}}
+$Z_H \defeq \prod_{x\in H}(X-x)$
+ \vspace{0.4in}
+
+By lemma suffices to show $g_1,g_2$, $deg(g_2)<n-1$ such that
+ \[ f(X)\equiv g_1(X)\cdot Z_H(X) +X\cdot g_2(X) \]
+\end{frame}
+
+
+  \begin{frame}
+\frametitle{AuroraLight \small{[G19]}}
+Check $f$ has this form by sending commitments to $g_1,g_2$,
+and openning $f,g_1,g_2$ at random point.\\
+ \vspace{0.4in}
+% Using Aurora+Sonic ideas:
+% \begin{corollary}
+%  Universal SNARK with prover almost as fast as {\small{[Groth16]}}
+%  (But longer proofs than Sonic, and no fully succinct mode).
+% \end{corollary}
+% 
+\end{frame}
+
+  \begin{frame}
+\frametitle{AuroraLight \small{[G19]}}
+Check $f$ has this form by sending commitments to $g_1,g_2$,
+and openning $f,g_1,g_2$ at random point.\\
+ \vspace{0.4in}
+Using Aurora+Sonic ideas:
+\begin{corollary}
+ Universal SRS SNARK with prover almost as fast as {\small{[Groth16]}}
+ (But longer proofs than Sonic, and no fully succinct mode).
+\end{corollary}
+
+\end{frame}
+
+
+
+\end{document}
