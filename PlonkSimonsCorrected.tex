@@ -54,6 +54,35 @@
 %\begin{frame}
   %\tableofcontents
 %\end{frame}
+\begin{frame}
+\frametitle{Prelude: Trusted setups for pairing-based SNARKs}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+ 
+  \begin{itemize}
+  \item Want to prove statements about circuit satisfiability
+\item Generate CRS of elements $g^{P(s)}$ for secret $s\in \F$ nobody knows, for some polynomials $P$ (potentially depending on circuit).
+  \end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Prelude: Trusted setups for pairing-based SNARKs}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+ 
+  \begin{itemize}
+  \item Want to prove statements about circuit satisfiability
+\item Generate CRS of elements $g^{P(s)}$ for secret $s\in \F$ nobody knows, for some polynomials $P$ (potentially depending on circuit).
+\item If CRS only contains elements $g^{s^i}$ setup is \textbf{universal and updatable}.
+
+\end{itemize}
+
+
+\end{frame}
+
+
+
+
 
 \begin{frame}
 \frametitle{Plonk in two sips}   % Insert frame title between curly braces
@@ -73,7 +102,7 @@
 \begin{frame}
 \large{Part 1: All you need is a permutation check}\\
  \vspace{0.2in}
-\normalsize{\textbf{Our setting:} want short proofs about fan-in 2 unlimited fan-out circuits, trusted setup depends only on circuit size.}
+\normalsize{\textbf{Our setting:} want short proofs about fan-in 2 unlimited fan-out circuits, trusted setup is updatable depends only on circuit size.}
 \end{frame}
 
 
@@ -245,7 +274,7 @@ If claim false - w.h.p as mutliset $\set{a'_1,a'_2,a'_3}\neq \set{b'_1,b'_2,b'_3
 %Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
 
 \textbf{step 2:} Choose random $\gamma\in \F$. Let
- \[a''_i=a'_i +\gamma, b''_i = b_i + \gamma\]
+ \[a''_i=a'_i +\gamma, b''_i = b'_i + \gamma\]
  
  
  \vspace{0.2in}
@@ -373,10 +402,9 @@ $a_1\cdot P_1 + a_2\cdot P_2 \equiv T\cdot Z_H$.
 \frametitle{Checking products with $H$-ranged protocols}   % Insert frame title between curly braces
 %Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
  \begin{enumerate}
-  \item $\prv$ computes $Z_f$ with 
-  $ Z_f(\gen)=1, Z_f(\gen^i) = \prod_{j<i}  f(\gen^j)$, {\small{$i=2..n+1$}}.
-  Computes $Z_g$ similarly.
-  \item Sends $Z_f,Z_g$ to $\ideal$.
+  \item $\prv$ computes $Z$ with 
+  $ Z(\gen)=1, Z(\gen^i) = \prod_{j<i}  f(\gen^j)/g(\gen^j)$, {\small{$i=2..n+1$}}.
+  \item Sends $Z$ to $\ideal$.
 
  \end{enumerate}
 
@@ -387,16 +415,14 @@ $a_1\cdot P_1 + a_2\cdot P_2 \equiv T\cdot Z_H$.
 \frametitle{Checking products with $H$-ranged protocols}   % Insert frame title between curly braces
 %Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
  \begin{enumerate}
-  \item $\prv$ computes $Z_f$ with 
-  $ Z_f(\gen)=1, Z_f(\gen^i) = \prod_{j<i}  f(\gen^j)$.
-  Computes $Z_g$ similarly.
-  \item Sends $Z_f,Z_g$ to $\ideal$.
+  \item $\prv$ computes $Z$ with 
+  $ Z(\gen)=1, Z(\gen^i) = \prod_{j<i}  f(\gen^j)/g(\gen^j)$.
+  \item Sends $Z$ to $\ideal$.
   \item $\ver$ checks following identities on $H$.
   \begin{enumerate}
-   \item $L_1(X) (Z_f(X)-Z_g(X)) =0$
-   \item $Z_f(X) f(X) = Z_f(\gen\cdot X)$
-   \item $Z_g(X) f(X) = Z_g(\gen\cdot X)$
- \item $L_n(X) (Z_f(\gen\cdot X) -Z_g(\gen\cdot X))=0$ 
+   \item $L_1(X) (Z(X)-1) =0$
+   \item $Z(X) f(X) = Z(\gen\cdot X)g(X)$
+ \item $L_n(X) (Z(\gen\cdot X) -1)=0$ 
  \end{enumerate}
 
  \end{enumerate}
@@ -410,9 +436,9 @@ $a_1\cdot P_1 + a_2\cdot P_2 \equiv T\cdot Z_H$.
 \begin{frame}
 \frametitle{The bottom line {\normalsize{(on BLS-381 curve)}}}   % Insert frame title between curly braces
 %Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
-  700 byte proofs with one trusted setup for all fan-in two circuits of $n$ gates.\\
+ 600 byte proofs with one trusted setup for all fan-in two circuits of $n$ gates.\\
   \vspace{0.2in}
-Prover does $12n$ $G_1$ exp.\\
+Prover does $11n$ $G_1$ exp {\small{(or $9n$ $G_1$ exp with 700 byte proof)}}.\\
   \vspace{0.2in}
 For batch of proofs on same circuit only $3n$ $G_1$ exp and $240$ bytes for each additional proof.
  
