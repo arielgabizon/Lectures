@@ -1,0 +1,384 @@
+\documentclass[shadesubsections,trans,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+
+
+\title{\LARGE{On knowledge assumptions in recent zk-SNARK constructions}}    % Enter your title between curly braces
+\author{\Large{Ariel Gabizon}}                 % Enter your name between curly braces
+\institute{\normalsize{Protocol Labs}}      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Talk for 30 minutes} % Add notes to yourself that will be displayed when
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+%\begin{frame}
+  %\tableofcontents
+%\end{frame}
+
+\begin{frame}
+  \frametitle{Knowledge assumptions:}   % Insert frame title between curly braces
+\textbf{Standard crypto assumption} - you can't do $X$\\
+ \vspace{0.4in}
+\textbf{Knowledge assumption} - if you did $X$, you must have did it in way $Y$.
+ \vspace{0.4in}
+
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Basic Knowledge of Exponent Assumption (Damg{\aa}rd 91)}   % Insert frame title between curly braces
+ $\adv$ is given $(g,g^\alpha)$ for uniform $\alpha \in \F$.\\
+ \vspace{0.4in}
+Challenged to make a new pair of ``ratio $\alpha$'' $(g^c,g^{\alpha c})$.
+
+ \vspace{0.4in}
+
+\textbf{KEA:} If $\adv$ succeeds then he ``knows'' $c$.
+ 
+\end{frame}
+
+\begin{frame}
+ Suppose $\adv$ is given $(g,g^x,g^\alpha,g^{\alpha \cdot x})$.\\
+ \vspace{0.4in}
+Can output $(g^c,g^{\alpha\cdot c})$ for $c=c_1 + c_2\cdot x$. 
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{$d$-power KEA (Groth,10)}   % Insert frame title between curly braces
+ Given $(g,g^x,\ldots, g^{x^d},g^\alpha,g^{\alpha\cdot x},\ldots,g^{\alpha\cdot x^d})$ for uniform $\alpha,x \in \F$.\\
+ \vspace{0.3in}
+If $\adv$ produces $(g^c,g^{\alpha c})$,
+then he ``knows'' polynomial $A$ of degree $\leq d$ with
+$c=A(x)$.
+ 
+\end{frame}
+\begin{frame}
+  \frametitle{$d$-power KEA (Groth,10)}   % Insert frame title between curly braces
+ Given $(g,g^x,\ldots, g^{x^d},g^\alpha,g^{\alpha\cdot x},\ldots,g^{\alpha\cdot x^d})$ for uniform $\alpha,x \in \F$.\\
+ \vspace{0.3in}
+If $\adv$ produces $(g^c,g^{\alpha c})$,
+then he ``knows'' polynomial $A$ of degree $\leq d$ with
+$c=A(x)$.\\
+ \vspace{0.4in}
+ \emph{Enables ``blind verifiable polynomial evaluation'' in SNARKs}
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Abstracting and Generalizing KEA}
+ \begin{itemize}
+  \item $[x]:=g^x$ -  \textbf{encoding} of $x$.
+  \vspace{0.3in}
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Abstracting and Generalizing KEA}
+ \begin{itemize}
+  \item $[x]:=g^x$ -  \textbf{encoding} of $x$.
+  \vspace{0.3in}
+  \item Challenge Equation: $Y_2=\alpha\cdot Y_1$.
+   \vspace{0.3in}
+ \end{itemize}
+\end{frame}
+\begin{frame}
+ \frametitle{Abstracting and Generalizing KEA}
+ \begin{itemize}
+  \item $[x]:=g^x$ -  \textbf{encoding} of $x$.
+  \vspace{0.3in}
+  \item Challenge Equation: $Y_2=\alpha\cdot Y_1$.
+   \vspace{0.3in}
+\item Base set: $\set{1,x,\ldots,x^d,\alpha,\alpha\cdot x,\ldots,\alpha\cdot x^d}$
+ \end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Abstracting and Generalizing KEA}
+ \begin{itemize}
+  \item $[x]:=g^x$ -  \textbf{encoding} of $x$.
+  \vspace{0.2in}
+  \item Challenge Equation: $Y_2=\alpha\cdot Y_1$.
+   \vspace{0.2in}
+\item Base set: $\set{1,x,\ldots,x^d,\alpha,\alpha\cdot x,\ldots,\alpha\cdot x^d}$
+ \end{itemize}
+\vspace{0.3in}
+ \textbf{Generic Assumption:} \emph{Given encoded challenge set, if $\adv$ outputs encodings of $c,c'$ satisfying challenge equation;\\
+ Then he knows to write $c,c'$ as linear combination of base set s.t. equation holds as pol. identity in $\alpha$.}
+ \end{frame}
+
+
+ \begin{frame}
+ \frametitle{Keep the equation, change the challenge set}
+ 
+ \[\alpha_1 \cdot Y_1  = Y_{2}\]
+  \vspace{0.3in}
+\[\set{u_i(x),\alpha\cdot u_i(x)},\]
+for specific polys $u_i(X)$\\
+ 
+ 
+ 
+ \end{frame}
+
+ 
+ 
+ \begin{frame}
+ \frametitle{Keep the equation, change the challenge set}
+ 
+ \[\alpha_1 \cdot Y_1  = Y_{2}\]
+  \vspace{0.3in}
+  
+  Base set:
+\[\set{u_i(x),\alpha\cdot u_i(x)},\]
+for specific polys $u_i(X)$\\
+  \vspace{0.3in}
+  \emph{Intuition: allows to check $c$ is combination of these specific polynomials evaluted at $x$}
+  
+  
+  
+  
+  %  
+%  \begin{lemma}
+%   Doesn't lead to stronger assumption than two-variable version
+%  \end{lemma}
+
+ 
+ 
+ \end{frame}
+ 
+%  \begin{frame}
+%  \frametitle{Mutli-variate challenge equations}
+%  
+%  \[\alpha_1 \cdot Y_1 + \ldots + \alpha_t \cdot Y_t = Y_{t+1}\]
+%   \vspace{0.3in}
+%  
+%  \begin{lemma}
+%   Doesn't lead to stronger assumption than two-variable version
+%  \end{lemma}
+% 
+%  
+%  \emph{Intuition: allows to batch-verify many blind evaluations}
+%  
+%  \end{frame}
+% 
+ 
+ 
+ 
+ \begin{frame}
+ \frametitle{Quadratic equation assumptions [Implicit in Groth, 2016]}
+ 
+ 
+ \[Y_1\cdot Y_2= \alpha\beta + \delta \cdot Y_{3}\]
+  \vspace{0.3in}
+ 
+%[Groth,2016] zk-SNARK in GG model (implicitly) based on  assumption from this equation.
+ 
+ Base set: $\set{\beta\cdot u_i(X),\alpha\cdot v_i(X), w_i(X),
+ \frac{\beta \cdot u_i+\alpha\cdot v_i+w_i}{\delta}}$
+  \vspace{0.3in}
+ 
+ 
+ \end{frame}
+
+ 
+ 
+ 
+ \begin{frame}
+ \frametitle{Quadratic equation assumptions [Implicit in Groth, 2016]}
+ 
+ 
+ \[Y_1\cdot Y_2= \alpha\beta + \delta \cdot Y_{3}\]
+  \vspace{0.3in}
+ 
+%[Groth,2016] zk-SNARK in GG model (implicitly) based on  assumption from this equation.
+ 
+ Base set: $\set{\beta\cdot u_i(X),\alpha\cdot v_i(X), w_i(X),
+ \frac{\beta \cdot u_i+\alpha\cdot v_i+w_i}{\delta}}$
+  \vspace{0.3in}
+ 
+ \emph{Intuition: allows to check at once three proof elements are the same combination of three sets of polynomials }
+ 
+ \end{frame}
+\begin{frame}
+ \textbf{Generic Group Model:}
+ $\adv$ can only generate new elements via natural group operations.\\
+ 
+\vspace{0.3in}
+% \textbf{Algebraic Group Model [Fuchsbauer, Kiltz, Loss]:}
+% $\adv$ can generate arbitrary new elements, but must then 
+ 
+ \begin{definition}
+  A ``low-degree world'' is one where all information seen by $\adv$ is encodings of uniform inputs evaluated at low-degree polynomials. 
+ \end{definition}
+ 
+
+ \end{frame}
+\begin{frame}
+ \vspace{0.3in}
+ \begin{lemma}[implicit - Groth, 2016]
+  In a low-degree world, generic assumption holds for any polynomial-degree challenge equation and challenge set.
+ \end{lemma}
+
+ 
+
+ \end{frame}
+
+ \begin{frame}
+ \frametitle{``Asymmetric'' assumptions [Groth-Maller, 2017]:}
+Use trivial equation
+\[Y_1=Y_2,\]
+but require encoding in distinct groups with no homomorphism.
+
+ 
+
+ \end{frame}
+
+  \begin{frame}
+ \frametitle{``Asymmetric'' assumptions [Groth-Maller, 2017]:}
+
+
+\textbf{[GM]:}Using circuits with squaring instead of mult. gives  simulation-extractable zk-SNARKs as small as [Groth,2016] - 3 group elements.
+ \vspace{0.3in}
+
+\emph{However, prover computations significantly larger than [Groth,2016] cause of move to squarings}
+ 
+
+ \end{frame}
+
+
+ \begin{frame}
+  \textbf{New result:}
+  Assuming only $d-PKE$.
+  zk-SNARK with $4$-group element proofs; prover run time close to [Groth,2016]\\
+  
+  Same num. of $G_2$ operations. $n$ more $G_1$ operations.\\
+  
+  $n$= num. of mult gates.
+  
+
+  
+ \end{frame}
+
+ 
+ 
+ \begin{frame}
+ \frametitle{Result based on multivariate challenge equation:}
+ 
+ \[\alpha_1 \cdot Y_1 + \ldots + \alpha_t \cdot Y_t = Y_{t+1}\]
+  \vspace{0.3in}
+
+ 
+   \emph{Intuition: can allow to verify many blind evaluations with one extra element}
+
+ 
+
+ 
+\end{frame}  
+ 
+ 
+ 
+ 
+%  \begin{frame}
+%  \frametitle{Result based on:}
+%  \begin{lemma}
+%   Assumption from multivariate 
+%  \[\alpha_1 \cdot Y_1 + \ldots + \alpha_t \cdot Y_t = Y_{t+1}\]
+%  not stronger than bi-variate version.
+%  \end{lemma}
+% 
+%  
+% \end{frame}  
+%  
+%  
+ \begin{frame}
+ 
+ 
+ 
+ 
+ 
+ \begin{lemma}
+  Assumption from multivariate 
+ \[\alpha_1 \cdot Y_1 + \ldots + \alpha_t \cdot Y_t = Y_{t+1}\]
+ not stronger than bi-variate version.
+ \end{lemma}
+
+ 
+\end{frame}  
+  
+  
+  
+  %  
+%  \begin{lemma}
+%   Doesn't lead to stronger assumption than two-variable version
+%  \end{lemma}
+
+ 
+ 
+
+ 
+ 
+ 
+% 
+% \subsection{Simple slide with three points shown in succession}
+% 
+% \begin{frame}
+%   \frametitle{Simple slide with three points shown in succession}   % Insert frame title between curly braces
+% 
+%   \begin{itemize}
+%   \item<1-> Point 1 (Click ``Next Page'' to see Point 2) % Use Next Page to go to Point 2
+%   \item<2-> Point 2  % Use Next Page to go to Point 3
+%   \item<3-> Point 3
+%   \end{itemize}
+% \end{frame}
+% \note{Speak clearly}  % Add notes to yourself that will be displayed when
+%                       % typeset with the notes or notesonly class options
+% 
+% 
+% \section{Slide with two columns: items and a graphic}
+% 
+% \begin{frame}
+%   \frametitle{Slide with two columns: items and a graphic}   % Insert frame title between curly braces
+%   \begin{columns}[c]
+%   \column{2in}  % slides are 3in high by 5in wide
+%   \begin{itemize}
+%   \item<1-> First item
+%   \item<2-> Second item
+%   \item<3-> ...
+%   \end{itemize}
+%   \column{2in}
+%   \framebox{Insert graphic here % e.g. \includegraphics[height=2.65in]{graphic}
+%   }
+%   \end{columns}
+% \end{frame}
+% \note{The end}       % Add notes to yourself that will be displayed when
+% 		     % typeset with the notes or notesonly class options
+
+\end{document}
