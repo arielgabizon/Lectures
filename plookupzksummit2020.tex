@@ -1,0 +1,175 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\xor}{\ensuremath{xor}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{plookup: speeding up SNARKs on non-friendly functions with lookup tables}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon  \; Zachary J. Williamson}\\                 % Enter your name between curly braces
+\tt{\footnotesize{\;\;\;\;\;\; \textbf{Aztec}   \;\;\;\;\;\;\;\;\;\;\;\; }                                       } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}
+\frametitle{SNARKs are easy prey in a  world full of nasty binary functions}
+$a,b,c\in \F$
+  \vspace{0.2in}
+
+Want to show $c = a\;\; xor\;\; b $ as 8-bit strings\pause
+  \vspace{0.2in}
+
+Standard way requires 25-32 constraints: Give bit decomposition of $a,b,c$, check bitwise xor.
+\end{frame}
+
+
+\begin{frame}
+$a,b,c\in \F$
+  \vspace{0.2in}
+
+Want to show $c = a\;\; xor\;\; b $ as 8-bit strings.
+  \vspace{0.2in}
+
+Standard way requires 25-32 constraints: Give bit decomposition of $a,b,c$, check bitwise xor.\\
+  \vspace{0.2in}
+This is a \emph{multiplicative} factor you pay on each small operation while computing SHA/BLAKE
+
+\end{frame}
+
+
+
+
+\begin{frame}
+ \frametitle{Approach 1: Keep SNARKs in friendly neighborhoods}
+ 
+  
+  
+\begin{tikzpicture}[ball/.style={circle, minimum width=5cm, minimum height=5cm, draw}]
+Blake
+% \node[ball] (gate1) {+};
+% \node[ball, above right=1.25cm of gate1] (gate2) {$\times$};
+\node[ball] (text1){MIMC \linebreak Poseidon \linebreak Rescue};
+\node[right=2cm of text1] (text2) {Blake};
+% \node[ below=3cm of input1] (input3) {no trusted setup};   
+% \node[ right=0.1cm of input3] (text3) {\footnotesize{(STARKs, bulletproofs,DARKs,Redshift)}};   
+
+% \draw[->] (input1) -- (input3);
+
+\end{tikzpicture}
+  
+  
+  
+  SHA                            
+  
+  
+\end{frame}
+
+\begin{frame}
+ \frametitle{Our Approach: lookup tables {\normalsize (see also: Arya{\footnotesize [Bootle, Cerulli, Groth, Jakobsen, Maller]})}}
+ 
+ 
+ Precompute table $T$ of all triplets $(a,b,c)$
+  
+  s.t. $c=a\;\;\xor\;\;b$.\pause
+  
+    \vspace{0.2in}
+
+Instead of representing
+$\xor$ logic, check that $(a,b,c)\in T$\pause
+    \vspace{0.2in}
+  
+After enough lookups, has amortized cost of $\sim 1$ constraint per $\xor$.
+
+    
+\end{frame}
+
+
+
+\begin{frame}
+ \center{The plookup protocol in a nutshell}    
+\end{frame}
+
+\begin{frame}
+Witness $f=\sett{f_i}{i\in [n]}$
+Table $t=\sett{t_i}{i\in [d]}$
+
+Want to prove $f\subset t$.
+(using randomness we have reduced tuples to single elements).
+\end{frame}
+
+\begin{frame}
+ First thing that comes to mind 
+ Some divisibility check between
+ 
+ \[F=\prod_{i\in [n]}(X-f_i), T=\prod_{i\in [d]} (X-t_i)\]
+\end{frame}
+% 
+% \begin{frame}
+%  Arya approach
+%  
+%  \[F=\prod_{i\in [n]}(X-f_i), T=\prod_{i\in [d] (X-t_i)\]
+% \end{frame}
+% 
+
+
+
+
+% \begin{frame}
+%  For security, SNARKs require a setup phase.\\ \linebreak
+%   \vspace{0.2in}
+%  \includegraphics[width=300, valign=m]{zcashsetup.png}
+%  
+% \end{frame}
+
+
+
+
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+%\begin{frame}
+  %\tableofcontents
+%\end{frame}
+\end{document}
