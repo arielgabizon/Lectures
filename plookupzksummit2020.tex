@@ -20,6 +20,7 @@
 %                       beamerthemetree, beamerthemetreebars  
 \newcommand{\adv}{\ensuremath{\mathcal A}}
 \newcommand{\xor}{\ensuremath{xor}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
 \newcommand{\F}{\ensuremath{\mathbb F}}
 \newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
 \newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
@@ -126,21 +127,54 @@ After enough lookups, has amortized cost of $\sim 1$ constraint per $\xor$.
 
 \begin{frame}
  \center{The plookup protocol in a nutshell}    
+ 
+ \center{\emph{\footnotesize (a simpler protocol we came up with while preparing the slides)}}
 \end{frame}
+
+ 
+\begin{frame}
+\frametitle{Basic tool: The multiset check}
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+\textbf{example:} Given $a,b\in \F^3$, want to check $\{b_1,b_2,b_3\} \stackrel{?}{=} \{a_1,a_2,a_3\}$ \\ \pause
+ \vspace{0.2in}
+
+  
+ Choose random $\gamma\in \F$. Check
+  \[(a_1 + \gamma)(a_2+ \gamma)(a_3 + \gamma) \stackrel{?}{=} (b_1+\gamma)(b_2+\gamma)(b_3+\gamma)\]\pause
+%   \[a'_1 = a_1 + \gamma, a'_2 = a_2 + \gamma, a'_3 = a_3 + \gamma\]
+%  \[b'_1 = b_1 + \gamma, b'_2 = b_2 + \gamma, b'_3 = b_3 + \gamma\]\pause
+
+ \vspace{0.2in}
+ If $a,b$ different as sets then w.h.p products different.\pause
+ 
+  \vspace{0.2in}
+
+ \plonk's grand product implements this super efficiently
+\end{frame}
+
+
 
 \begin{frame}
 Witness $f=\sett{f_i}{i\in [n]}$
 Table $t=\sett{t_i}{i\in [d]}$
 
 Want to prove $f\subset t$.
-(using randomness we have reduced tuples to single elements).
+{\small (using randomness we can reduce tuples to single elements)}.
 \end{frame}
 
+
 \begin{frame}
- First thing that comes to mind 
- Some divisibility check between
- 
- \[F=\prod_{i\in [n]}(X-f_i), T=\prod_{i\in [d]} (X-t_i)\]
+
+Witness $f=\set{3,1,1}$
+Table $t=\set{1,3,4}$
+
+\begin{enumerate}
+ \item Prover commits to $s\defeq$ \emph{sorted} version of $f\cup t$. $s\defeq (1,1,1,3,3,4)$  \pause
+ \item Prover shows $s=f\cup t$. \pause
+ \item Look at difference multiset of $s$ $s'\defeq \set{0,0,2,0,1}$, and difference multiset of $t$ $t'\defeq \set{2,1}$\pause
+ \item Prover shows $s'=t'\cup \set{0,0,0}$.
+\end{enumerate}
+
 \end{frame}
 % 
 % \begin{frame}
