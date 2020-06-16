@@ -336,7 +336,7 @@ Integer $M<n$. Given $f\in \polysofdeg{n}$, want to check $f(x)\in [1..M]$ for e
 \textbf{Protocol:}
  \begin{enumerate}
  \item $\prv$ computes ''sorted version of $f$``: $s\in \polysofdeg{n}$ with
- $\sett{s(x)}{x\in H}=\sett{f(x)}{x\in H}$, $s(\alpha^i)<s(\alpha^{i+1}$.\pause
+ $\sett{s(x)}{x\in H}=\sett{f(x)}{x\in H}$, $s(\alpha^i)\leq s(\alpha^{i+1})$.\pause
  \item $\prv$ sends $s$ to $\ideal$.\pause
  \item $\ver$ checks that
  \begin{enumerate}
@@ -350,9 +350,12 @@ Integer $M<n$. Given $f\in \polysofdeg{n}$, want to check $f(x)\in [1..M]$ for e
 \end{enumerate}
 
 
-We get $\aggdeg{\prot}=3n$\pause \\
+We get $\aggdeg{\prot}=3n$ \\
+\end{frame}
+\begin{frame}
 To remove assumption use preprocessed ''table poly`` $t$ with $\sett{t(x)}{x\in H}=[1..M]$
-increased  $\aggdeg{\prot}$ by $2M$\pause \\
+increased  $\aggdeg{\prot}$ by $2M$\\
+ \vspace{0.2in}
 Open question: get almost same complexity for larger range e.g. $[1..M^2]$ 
 
 
