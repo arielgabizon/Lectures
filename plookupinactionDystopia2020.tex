@@ -1,0 +1,212 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{amssymb, eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\xor}{\ensuremath{\oplus}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{Plookup in action}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon  \; Zachary J. Williamson}\\                 % Enter your name between curly braces
+                                      } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+  \includegraphics{azteclogo.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Turbo-PLONK programs {\small (based on PLONK[GWC])} }   % Insert frame title between curly braces
+\begin{table}[!htbp]
+\[	\begin{tabular}{l|l|l|l|}
+	 a_{1} & b_{1}&c_{1}&d_{1}\\ \hline
+	  \vdots & \vdots&\vdots & \vdots \\ \hline
+	 a_{i} & b_{i}&c_{i}&d_{i}\\ \hline
+	 a_{i+1} & b_{i+1}&c_{i+1}&d_{i+1}\\ \hline
+% 	  w_{i+1,1} & w_{i+1,2}&w_{i+1,3}& w_{i+1,4}\\ \hline
+	  \vdots & \vdots&\vdots & \vdots \\ 
+
+	\end{tabular}
+\]
+\end{table}
+
+\begin{itemize}
+ \item Local low-degree constraints between rows (e.g. $a_{i+1}=b_i^2 + c_i$)
+ \item Global equality constraints between any two cells (e.g. $a_{100} = d_2$).
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+\frametitle{ \textbf{Ultra}-PLONK  programs }   % Insert frame title between curly braces
+% \begin{table}[!htbp]
+% \[	\begin{tabular}{l|l|l|l|}
+% 	 a_{1} & b_{1}&c_{1}&d_{1}\\ \hline
+% 	  \vdots & \vdots&\vdots & \vdots \\ \hline
+% 	 a_{i} & b_{i}&c_{i}&d_{i}\\ \hline
+% 	 a_{i+1} & b_{i+1}&c_{i+1}&d_{i+1}\\ \hline
+% % 	  w_{i+1,1} & w_{i+1,2}&w_{i+1,3}& w_{i+1,4}\\ \hline
+% 	  \vdots & \vdots&\vdots & \vdots \\ 
+% 
+% 	\end{tabular}
+% \]
+% \end{table}
+
+\begin{itemize}
+ \item Local low-degree constraints between rows (e.g. $a_{i+1}=b_i^2 + c_i$).
+ \item Global equality constraints between any two cells (e.g. $a_{100} = d_2$).
+ \item \textbf{Lookup constraints} - e.g. $(a_5,b_5,c_5)$ is contained in the rows of a predefined table $T$.
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+\frametitle{Lookup constraints in SNARKs}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+First used in Arya{\footnotesize [Bootle, Cerulli, Groth, Jakobsen, Maller]}\\ \pause
+    \vspace{0.4in}
+Plookup [GW20] gives improved efficiency:\\
+
+~$2(|T|+|w|)$ prover group exp\\
+    \vspace{0.4in}
+$|T|$ - number of rows in table\\
+$|w|$ - length of witness
+\end{frame}
+\begin{frame}
+\frametitle{Example: bitwise XOR with ``direct'' table}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+For row values $(a,b,c)$ want to show $c=a\oplus b$ as $11$-bit strings.\pause
+
+    \vspace{0.2in}
+ Use table $T$ of all triplets $(a,b,c)$
+  
+  s.t. $c=a\;\;\oplus\;\;b$.\pause
+  
+    \vspace{0.2in}
+$|T| = 2^{22}$
+
+\end{frame}
+\begin{frame}
+\frametitle{Another approach - Sparse representations }   
+Table $T_1$ of pairs $(a,a_s)$ - $a$ is 10-bit string, $a_s$ is ``$a$ with zeroes in between bits'' - 
+% \begin{block}{Formula}
+\begin{equation}
+a=  \Sigma a_i \cdot 2^i, a_s =  \Sigma a_i \cdot 4^i
+\end{equation}\pause
+% \end{block}
+
+Field addition on sparse form now gives bitwise XOR :
+
+$a=(1 1) $
+$\;\;\;\;\;b=(1 0) $\\ \pause
+
+$a_s = (0 1 0 1)$\\
+$b_s = (0 1 0 0)$\\ \pause
+\vspace{0.2in}
+$a_s + b_s = (1 0 0 1)$\\ \pause
+Odd bits are XORs
+\end{frame}
+\begin{frame}
+\frametitle{Another approach - Sparse representations}   % Insert frame title between curly braces
+%Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+After adding in sparse form, can use another lookup to ``decode'' XOR result
+$T_2 = \set{c_s,c_{XOR}}$ so
+\[c_s=\Sigma  c_i 4^i, c_{XOR}=\Sigma \phi(c_i) 4^i,\]
+\[\phi(0)=0,\phi(1)=1,\phi(2)=0,\phi(3)=1\]\pause
+
+\vspace{0.4in}
+{\small \textit{Can get AND at same time (see Arya paper)}}
+\end{frame}
+\begin{frame}
+\frametitle{SHA-256 with Sparse representations on Steroids }   
+% \textit{Motivation: Suppose all SNARK-friendly hash functions got covid from the SNARK}
+\end{frame}
+\begin{frame}
+$MAJ'$ is one of the two main ``chunks'' of a SHA round:
+\begin{itemize}
+ \item $a,b,c$ 32-bit values 
+\item $>>>$ is right rotation.\pause
+\end{itemize}
+\vspace{0.2in}
+\[MAJ'(a,b,c) :=\]
+\[(a >>> 2) \oplus (a >>>13) \oplus (a>>> 22) \oplus MAJ(a,b,c)\]\pause
+% Assume we've managed to compute the rotations (addressed next)
+
+\end{frame}
+\begin{frame}
+
+We map $a,b,c$ into 16-sparse form:\\
+$\Sigma a_i 2^i\rightarrow\Sigma a_i 16^i$ \\ \pause
+\vspace{0.2in}
+In sparse form we simply add in field:\\
+\[4*(  (a>>>2)+(a>>>13)+(a>>>22) ) + (a+b+c)\]\pause
+Addition result is ``injective enough'' to retrieve output of $MAJ'$.
+\end{frame}
+% \begin{frame}
+% \frametitle{SHA-256 with sparse representations on Steroids }   % Insert frame title between curly braces
+% Since the beginning of time (LFKN, 1989) humanity has been trying to verify prover polynomial evaluations.\\
+% One of the two main ``chunks'' of a SHA round:
+% \[MAJ'(a,b,c) \defeq  a >>> 2 \oplus a >>>13 \oplus a>>> 22 \oplus MAJ(a,b,c)\]
+% $a,b,c$ 32-bit values, $>>>$ is right rotation.
+% Assume we've managed to compute the rotations (addressed next)
+% 
+% We map $a,b,c$ into 16-sparse form:
+% \[\sum a_i 2^i\rightarrow\sum a_i 16^i\]
+% In sparse form we simply add in field:
+% \[4*(  (a>>>2)+(a>>>13)+(a>>>22) ) + (a+b+c)\]
+% Addition result is ``injective enough'' to retrieve $MAJ'(a,b,c)$.
+% \end{frame}
+\begin{frame}
+\frametitle{Getting the rotations}   
+Split 32-bit $a$ to limbs $(a_2,a_1,a_0)$ of $10,11,11$ bits respectively.\\ \pause
+
+\vspace{0.2in}
+We have in total 9 ``rotate contributions'': 3 right-rotates  - $2,13,22$ of the three limbs.\\ \pause
+
+\vspace{0.2in}
+\emph{But} only two ``non-trivial'' contributions: $(a_1,13),(a_0,2)$ \\ \pause
+both can be computed with a table of right rotate by $2$.\\ \pause
+
+\vspace{0.2in}
+In total for $MAJ'$- 3 tables of size  $\leq 2^{11}$
+
+\end{frame}
+\end{document}

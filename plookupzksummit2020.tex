@@ -4,6 +4,8 @@
 \usetikzlibrary{shapes, positioning}
 \usenavigationsymbolstemplate{}
 \usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+
 %\usepackage[T1]{fontenc}
 %\usepackage{fourier}
 % Dokumentets sprog
@@ -19,7 +21,7 @@
 % Other themes include: beamerthemebars, beamerthemelined, 
 %                       beamerthemetree, beamerthemetreebars  
 \newcommand{\adv}{\ensuremath{\mathcal A}}
-\newcommand{\xor}{\ensuremath{xor}}
+\newcommand{\xor}{\ensuremath{\oplus}}
 \newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
 \newcommand{\F}{\ensuremath{\mathbb F}}
 \newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
@@ -37,6 +39,7 @@
 \newcommand{\acc}{{\mathbf{acc}}}
 \newcommand{\ideal}{\mathbf{I}}
 \newcommand{\gen}{\alpha}
+
 %\setbeamersize{text margin left=3mm,text margin right=3mm} 
 \title{\large{plookup: speeding up SNARKs on non-friendly functions with lookup tables}}    % Enter your title between curly braces
 \author{\small{Ariel Gabizon  \; Zachary J. Williamson}\\                 % Enter your name between curly braces
@@ -56,7 +59,7 @@
 $a,b,c\in \F$
   \vspace{0.2in}
 
-Want to show $c = a\;\; xor\;\; b $ as 8-bit strings\pause
+Want to show $c = a\;\; \xor\;\; b $ as 8-bit strings\pause
   \vspace{0.2in}
 
 Standard way requires 25-32 constraints: Give bit decomposition of $a,b,c$, check bitwise xor.
@@ -64,15 +67,13 @@ Standard way requires 25-32 constraints: Give bit decomposition of $a,b,c$, chec
 
 
 \begin{frame}
-$a,b,c\in \F$
-  \vspace{0.2in}
 
-Want to show $c = a\;\; xor\;\; b $ as 8-bit strings.
+Want to show $c = a\;\; \xor\;\; b $ as 8-bit strings.
   \vspace{0.2in}
 
 Standard way requires 25-32 constraints: Give bit decomposition of $a,b,c$, check bitwise xor.\\
   \vspace{0.2in}
-This is a \emph{multiplicative} factor you pay on each small operation while computing SHA/BLAKE
+\emph{This is a \textbf{multiplicative} factor you pay on each small operation while computing SHA/BLAKE}
 
 \end{frame}
 
@@ -86,17 +87,26 @@ This is a \emph{multiplicative} factor you pay on each small operation while com
   
 \begin{tikzpicture}[ball/.style={circle, minimum width=5cm, minimum height=5cm, draw}]
 Blake
+
+
+
+
 % \node[ball] (gate1) {+};
 % \node[ball, above right=1.25cm of gate1] (gate2) {$\times$};
-\node[ball] (text1){MIMC \linebreak Poseidon \linebreak Rescue};
+\node[ball] (text1){ MIMC \linebreak Poseidon \linebreak Rescue   
+};
 \node[right=2cm of text1] (text2) {Blake};
+
 % \node[ below=3cm of input1] (input3) {no trusted setup};   
 % \node[ right=0.1cm of input3] (text3) {\footnotesize{(STARKs, bulletproofs,DARKs,Redshift)}};   
 
 % \draw[->] (input1) -- (input3);
+% \node[above = 0.2cm of text1] (pic1){
 
+%   \node[anchor=south west,inner sep=0cm] at ($(current page.south west)$) {
+%      \includegraphics[width=80]{nicehouse.jpg}
+%   };
 \end{tikzpicture}
-  
   
   
   SHA                            
