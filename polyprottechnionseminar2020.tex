@@ -133,7 +133,7 @@ $\prv$'s  msgs are to ideal party $\ideal$. Must be $f_i\in \polysofdeg{d}$.
 $$\aggdeg{\prot}\defeq\left(\sum_{i\in [\ell]} \deg(f_i)+1\right)$$.\pause \\
  \vspace{0.2in}
 \textbf{Thm:\footnote{similar statements in Marlin/Fractal/Supersonic}}
-Can compile to ``real'' protocol in Algebraic Group Model, where prover complexity ~ $\aggdeg{\prot}$ .\\ \pause
+Can compile to ``real'' protocol in Algebraic Group Model, where prover complexity  $\sim \aggdeg{\prot}$ .\\ \pause
  \vspace{0.2in}
 \textbf{proof sketch:}
  Use [KZG] polynomial commitment scheme. $\prv$ commits to all polys. $\ver$ checks identity at random challenge point. 
@@ -309,7 +309,7 @@ To remove assumption use preprocessed ''table poly`` $t$ with $\sett{t(x)}{x\in 
 We get $\aggdeg{\prot}= \deg(s)+\deg(Z)+D-|H| = 3n+4M$.
 \end{frame}
 \begin{frame}
-Given integer $d$ decomposing each element to $d$ elements in range $M^{1/d}$ can 
+Given integer $d$ decomposing each element to $d$ elements in range $[1..M^{1/d}]$ can 
 give us $$\aggdeg{\prot} = 4dn+4M^{1/d}$$(by sending an auxiliary polynomial of degree $<dn$ with the decomposition of each element and then running the $M^{1/d}$ size range proof on this polynomial).\\
 
  \vspace{0.2in}

@@ -1,0 +1,197 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{amssymb, eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+ \newcommand{\prot}{\mathbf{P}}
+\newcommand{\aggdeg}[1]{\mathfrak{d}(#1)}
+\renewcommand{\deg}{\mathrm{deg}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\xor}{\ensuremath{\oplus}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]_1}}
+\newcommand{\enctwo}[1]{\ensuremath{\left[#1\right ]_2}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{fflonk: cheaply opening many polynomials using the fast-fourier equation }}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon (based on work with Zac Williamson) }\\                 % Enter your name between curly braces
+                                       }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+  \includegraphics{azteclogo.png}
+\end{frame}
+\begin{frame}
+ \frametitle{ Motivation: Save gas on Ethereum}   % Insert frame title between curly braces
+ \begin{itemize}
+  \item Recent polynomial IOP based snarks (Sonic, Marlin, Plonk,..) verification consists of two pairings and some number $t$ of $G_1$ scalar multiplications.\pause
+  \item Each $G_1$ scalar mult - 6000 gas 5usd.
+  \item That's 76800usd  per scalar mult when doing an on chain proof once in half an our per scalar mult.\pause
+  \item \textbf{This work:}  Getting $t$ down from 16 to 5 in plonk (at the cost of trippling prover time) .
+ \end{itemize}
+
+\end{frame}
+\begin{frame}
+\textit{snark verification reduces to polynomial commitment scheme (PCS) opening verification -}\\
+ \vspace{0.4in}
+a 3 minute reminder on the Kate-Zaverucha-Goldberg PCS
+\end{frame}
+\begin{frame}
+ \frametitle{Polynomial commitment schemes {\small [KZG, 10]}}   % Insert frame title between curly braces
+\begin{itemize}
+ \item Prover send short commitment $\cm(f)$ to polynomial.\pause
+ \item Later Verifier can choose value $s\in \F$.\pause
+ \item Prover sends back $z=f(s)$ ; together with proof $\open{f,s}$ that $z$ is correct.\pause
+\end{itemize}
+KZG give us PCS with commitments and openings are practically 32 bytes.\\ 
+\textit{Notation:} $\enc{x}=x\cdot g$ where $g$ generator of (first source group of) elliptic curve group with pairing.
+\end{frame}
+
+
+\begin{frame}
+
+ Setup: $\enc{1},\enc{x},\ldots,\enc{x^d}$, for random $x\in \F$.\\ \pause
+ \vspace{0.4in}
+ $\cm(f)\defeq   \enc{f(x)}$\\ \pause
+ \vspace{0.4in}
+$\open{f,s}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(s)}{X-s}$\\ \pause
+ \vspace{0.4in}
+ $\verify{\cm,\pi,z,s}:$
+\[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-s})\]
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Opening many polynomials at $s$}
+
+ Input: $f_0,\ldots f_{d-1}$, $z_0=f_0(s),\ldots, z_{d-1}=f_{d-1}(s)$.\\ 
+ Verifier has commitments $\cm_i$ to $f_i$'s wants to verifier correctness of $z$'s.\\ \pause
+
+ \vspace{0.4in}
+ 
+ Naive solution: Run KZG for each $f_i$.\\
+ Cost: $d$ group elements in proof, $d$ pairings for verifier
+ 
+\end{frame}
+ 
+\begin{frame}
+\frametitle{Batched opening (Sonic,Marlin,Plonk)}
+\begin{itemize}
+ \item Verifier sends random $\gamma\in\F$\pause
+ \item Prover computes combination $f(X)\defeq \sum_{i<d} \gamma^i f_i(X)$
+ \item Verifier computes commitment to $f$ as $\cm(f)\defeq \sum_{i<d} \gamma^i \cm_i$
+ \item Prover and verifier use KZG to verify $f(s)=z$ for $z=\sum_{i<d} \gamma^i z_i$
+\end{itemize}
+\textit{cost:} $d-1$ verifier scalar muls to compute $\cm(f)$
+\textit{Punchline of this work:} can get rid of this $d$ dependence when $s$ is a $d$'th power
+\end{frame}
+\begin{frame}
+\frametitle{A useful tool from BDFG/Halo infinite}
+\textit{thm{\small [BDFG]}:} We can open a polynomial $f$ at points $s_0,\ldots,s_{d-1}$ with $2$ verifier scalar mults no matter how large $d$ is.\\ \pause
+ \vspace{0.4in}
+ \textit{If we can reduce opening many polys at $s$ to opening *one poly* at many points, we can use BDFG to get our desired result}
+\end{frame}
+\begin{frame}
+\frametitle{fflonk central idea: reduce opening many polys to one using the FFT identity}
+polys $f_0,f_1$, $a=f_0(s),b=f_1(s)$\\ \pause
+ \vspace{0.2in}
+\textit{First attempt:}
+Only open the sum -
+$F(X)\defeq f_0(X)+f_1(X)$.
+Prove that $F(s)=c=a+b$.\\ \pause
+\textit{problem:} Doesn't constrain $a,b$ individually - for any $a'$, $(a',c-a')$ will also verify \\ \pause
+ \vspace{0.2in}
+% \[F(X)=f_0(X)
+
+\end{frame}
+\begin{frame}
+\textit{Solution:} Use ``FFT equation in reverse direction'':
+ \[F(X)=f_0(X^2)+X f_1(X^2)\]
+To commit to $f_0,f_1$ send $\cm(F)$.\\ \pause 
+ \vspace{0.2in}
+Assume $s=t^2$.\\
+To open $f_0(s),f_1(s)$ open $F$ at $\{t,-t\}$:\\ \pause
+\[b_0\defeq F(t) = f_0(s)+t f_1(s)=a+tb\]
+\[b_1\defeq F(-t) = f_0(s)-t f_1(s)=a-tb\]
+i.e. $(b_0,b_1)$ give two independent constraints on $(a,b)$!
+\end{frame}
+\begin{frame}
+Assume $s=t^2$.\\
+To open $f_0(s),f_1(s)$ open $F$ at $\{t,-t\}$:\\ \pause
+\[b_0\defeq F(t) = f_0(s)+t f_1(s)=a+tb\]
+\[b_1\defeq F(-t) = f_0(s)-t f_1(s)=a-tb\]
+i.e. $(b_0,b_1)$ give two independent constraints on $(a,b)$!
+ \vspace{0.2in}
+\begin{itemize}
+ \item Similar construction can open $d$ polys at any $s=t^d$
+ \item \textit{Important:} poly-iop based snarks work fine with a PCS that can only open $d$'th powers.
+\end{itemize}
+
+\end{frame}
+ 
+\begin{frame}
+\frametitle{Cheaply opening a poly at $d$ points \href{https://eprint.iacr.org/2020/081.pdf}{[BDFG]}}
+Given poly $f$ with commitment $\cm$, $s_0,\ldots,s_{d-1}\in \F$, suppose $z_i=f(s_i)$ for $i<d$.
+\begin{itemize}
+ \item Define poly $r$ of degree $<d$ with
+$r(s_i)=z_i$ for $i<d$.\pause
+\item Define $Z(X)=\prod_{i<d} (X-s_i)$. Then we have $Z|(f-r)$. \pause
+\item Let $h(X)\defeq (f(X)-r(X))/(Z(X)$. Prover sends $\pi = \enc{h(x)}$. \pause
+\item From [KZG]: Verifier can now check
+\[e(\cm-\enc{r(x)},1)=e(\pi,\enctwo{Z(x)}\]\pause 
+\end{itemize}
+\textit{This requires $d$ G1 and G2 verifier scalar muls!}
+\end{frame}
+\begin{frame}
+In [BDFG] we trade these scalar mults for an extra group element in the proof:
+\begin{itemize}
+ \item Verifier chooses random $\alpha\in \F$ and sends to prover.
+ \item Define the polynomial 
+ \[L(X)\defeq f(X)-r(\alpha)-Z(\alpha)h(X)\]\pause
+\item If evals are correct, $L(X)$ should be zero at $\alpha$\pause
+\item Verifer can compute $\cm(L)$ with only two scalar muls:
+\[\cm(L)= \cm -\enc{r(\alpha)}-Z(\alpha)\pi\]
+\item Prover and verifier can now use KZG to check $L(\alpha)=0$.
+\end{itemize}
+\end{frame}
+
+
+\end{document}
