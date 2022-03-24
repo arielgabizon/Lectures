@@ -1,0 +1,141 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm}
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+ \newcommand{\prot}{\mathbf{P}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\aggdeg}[1]{\mathfrak{d}(#1)}
+\renewcommand{\deg}{\mathrm{deg}}
+\newcommand{\xor}{\ensuremath{\oplus}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\plookup}{\mathsf{plookup}}
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\roots}{\ensuremath\textrm{roots}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{Into the weeds of EC pairings - part 2}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon}\\                 % Enter your name between curly braces
+\tt{\footnotesize{\textbf{Aztec} }}  }                                     
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Recap (paraphrased)}   % insert frame title between curly braces
+$E: y^2=x^3-x$.  
+
+$H=\set{\frac{f}{g}}$, where $f,g\in k[x,y]/(y^2-x^3-x)$. \\ \pause
+\vspace{0.2in}
+For $h\in H$,
+$div(h)=\sum_{P\in E} a_P[P]$,
+where $a_P$ is the order of $h$ at $P$.\\ \pause
+Define function $\mathrm{sum}:\mathrm{Divisors}\to E$ by
+$$\mathrm{sum}\left(\sum_{P\in E} a_P(P)[P]\right) = \sum_{P\in E} a_P P$$\pause
+\textbf{cool lemma:} Given a divisor $D$ there exists $h\in H$ with $div(h)=D$ iff
+$deg(D)=0$ and $\mathrm{sum}(D)=\infty$.
+
+\end{frame}
+\begin{frame}
+\frametitle{Torsion points}
+Fix integer $n$ with $gcd(n,p)=1$.\\
+$E[n]\defeq \set{P\in E|n P = \infty}$ \nl
+\begin{theorem}
+ $|E[n]|=n^2$ and $E[n]=\mathbb{Z}_n\times \mathbb{Z}_n$.\nl
+ \end{theorem}
+For $T\in E$ define $\roots(T)\defeq \set{P\in E\;| \;n P = T}$ \nl
+$n:P\to n P$ is surjective, so  there is always some $Q_T\in \roots(T)$. \nl
+Thus, $\roots(T)=\set{Q_T+P}_{P\in E[n]}$.
+
+\end{frame}
+\begin{frame}
+\frametitle{Defining the Weil pairing}
+\pause
+Given $T\in E[n]$, we show there exists $g\in H$ with divisor
+$D\defeq \sum_{P\in \roots(T)} [P] - \sum_{P\in E[n]} [P]$:\nl
+$$D= \sum_{P\in E[n]} [Q_T+P] - \sum_{P\in E[n]} [P]$$\\ \pause
+so $$\mathrm{sum}(D) =\sum_{P\in E[n]}(Q_T+P-P) = n^2\cdot Q_T = n\cdot T = \infty$$\\ \pause 
+Now, given $S\in E[n]$ define
+$$e(S,T)\defeq \frac{g(S)}{g(\infty)}$$
+
+
+\end{frame}
+\begin{frame}
+ \begin{lemma} For any $S,T\in E[n]$ $e(S,T)\in \mu_n$ -  $\scriptstyle{\mu_n \defeq \set{a\in F, a^n=1}}$
+ \end{lemma}
+ There exists $f\in H$ with $div(f) = n\cdot [T] - n\cdot[\infty]$.\\ \pause
+ $$div(f\circ n) = n\sum_{Q\in \roots(T)} [Q] - n \sum_{Q\in E[n]} [Q]$$
+ $$= n\cdot div(g)= div(g^n)$$\pause
+ So $f\circ n = c\cdot g^n$ for some $c\in k$.\nl
+ So
+    $g(S)^n = f(n\cdot S) = f(\infty) = f(n\cdot \infty) = g^n(\infty)$.\\ \pause
+    Thus, $\left(\frac{g(S)}{g(\infty)}\right)^n =1 \Rightarrow e(S,T)\in \mu_n$.
+ \end{frame}
+\begin{frame}
+ \textbf{Showing bilinearity:}
+We use: For any $P\in E, S\in E[n]$, $\frac{g(S)}{g(\infty)}=\frac{g(P+S)}{g(P)}$. \nl
+In $S:$
+$$ e(S_1,T)\cdot e(S_2,T) = \frac{g(S_1)}{g(\infty)}\frac{g(S_1+S_2)}{g(S_1)}$$\pause
+$$= \frac{g(S_1+S_2)}{g(\infty)}= e(S_1+S_2,T)$$\pause
+
+\end{frame}
+\begin{frame}
+ In $T:$
+ Choose $T_1,T_2$ and let $T_3\defeq T_1+T_2$. Let $f_i\in H$ have $div(f_i) = n[T_i]-n[\infty]$
+ for $i=1,2,3$.\nl
+ By Lemma, there exists $h\in H$ with $div(H)=[T_3]-[T_1]-[T_2]+[\infty]$.\nl
+ We have
+ $$n\cdot div(h) = div(f_3)-div(f_1)-div(f_2) = div\left(\frac{f_3}{f_1 f_2}\right)$$\pause
+ So $h^n = c \frac{f_3}{f_1 f_2} \rightarrow c f_3=h^n f_1 f_2$.\nl
+ Composing inside with $n$:
+ $$(f_3\circ n) = (h\circ n )^n (f_1\circ n) (f_2 \circ n)$$\pause
+ 
+\end{frame}
+\begin{frame}
+ Equivalently, $g_3^n = (h\circ n)^n g_1 ^n g_2^n \Rightarrow g_3 = (h \circ n) g_1 g_2$.\nl
+ So 
+ $$e(S,T_1+T_2) = \frac{g_3(S)}{g(\infty)}= \frac{g_1(S)}{g_1(\infty)}\frac{g_2(S)}{g_2(\infty)}\frac{h(nS)}{h(\infty)}$$\pause
+ $$=e(S,T_1)e(S,T_2).$$
+\end{frame}
+
+
+
+
+\end{document}

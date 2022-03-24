@@ -1,0 +1,179 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+
+%\usepackage[T1]{fontenc}
+%\usepackage{fourier}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+ \newcommand{\prot}{\mathbf{P}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\aggdeg}[1]{\mathfrak{d}(#1)}
+\renewcommand{\deg}{\mathrm{deg}}
+\newcommand{\xor}{\ensuremath{\oplus}}
+\newcommand{\plonk}{\ensuremath{\mathcal{P} \mathfrak{lon}\mathcal{K}}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\plookup}{\mathsf{plookup}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{Into the weeds of EC pairings}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon}\\                 % Enter your name between curly braces
+\tt{\footnotesize{\textbf{Aztec})                                        } }      }% Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Divisors on $k(X)$}   % insert frame title between curly braces
+
+% \textbf{Preprocessing/inputs:} Predefined polynomials $g_1,\ldots,g_t\in \polysofdeg{d}$\\
+% \textbf{Range:} $H\subset\F$.\\ \pause
+% \vspace{0.4in}
+% \textbf{Protocol:}
+$P\defeq  k\cup\infty$.\pause \\ 
+\vspace{0.2in}
+A divisor is a formal sum
+$$D=\sum_{a\in P}d_a \cdot [a]$$
+where $d_a\in\mathbb{Z}$ is non-zero except for finitely many $a$.
+
+%  \begin{itemize}
+% 
+% \item  
+% \item At end, $\ver$ asks $\ideal$ if some identity holds between $\set{f_1,\ldots,f_\ell,g_1,\ldots,g_t}$   \textbf{\textit{on $H$}}. 
+% 
+% \end{itemize}
+% 
+\end{frame}
+\begin{frame}
+\frametitle{Evaluating at $\infty$ via projective space}   
+
+Evaluating $f(x)=\frac{x^2+x+1}{3x^2+1}$ at $\infty$:\\ \pause
+\vspace{0.2in}
+\textbf{Homogenize:} $--> \frac{x^2+xz+z^2}{3x^2+z^2}$ \\ \pause
+
+\vspace{0.2in}
+\textbf{Evaluate at $(x,z)=(1,0)$:}$\frac{1}{3}$
+\end{frame}
+\begin{frame}
+\frametitle{Divisors of functions}   % insert frame title between curly braces
+
+$f\in k(X)$
+$$div(f)=\sum o_a(f)\cdot [a]$$
+where $o_a(f)$ is the order of $f$ at $a$:\pause
+$$f=(x-a)^{o_a(f)} (g(x))$$ 
+where $g(a)\neq 0,\infty$ \\ \pause
+\vspace{0.2in}
+How to compute $o_{\infty}(f)$? If $f=g/h$ for polys $g,h$, $o_{\infty}(f) = deg(h)-deg(g)$
+
+
+\end{frame}
+\begin{frame}
+\textbf{example:}
+$$f=\frac{(X-1)^2(X-2)}{X-3}$$
+$div(f)=2\cdot[1]+[2]-[3]-2[\infty]$.\pause
+
+Define $deg(D)\defeq \sum_{a\in P} d_a$.\\  
+For $f\in k(X)$ we always have $deg(div(f))=0$.
+
+\end{frame}
+\begin{frame}
+ \frametitle{The divisor class group}
+ \begin{itemize}
+  \item The set of divisors is a group under coordinate wise addition\pause
+  \item The set of divisors of degree zero is a subgroup $Div^0$ under this rule.\pause
+  \item If $D=div(f)$ for $f\in k(x)$ we call $D$ a principal divisor.\pause
+  \item The \emph{divisor class group of degree 0} is: $Div^0/$(principal divisors).
+  
+ \end{itemize}
+Is this an interesting group?\pause
+No, its trivial!
+But this gets more interesting when we do it over an elliptic curve instead of a field.
+\end{frame}
+\begin{frame}
+Suppose our curve $E$ is $y^2=x^3-x$.
+Instead of $k(X)$ we'll work now over $H\defeq k(x,y)/(y^2-x^3-x)$. \\ \pause
+\vspace{0.2in}
+For example in $H$, $x=y^2\cdot\frac{1}{x^2-1}$.\\ \pause
+\vspace{0.2in}
+Now, a divisor is $D=\sum_{P\in E}d_j [P]$,
+and for $f\in H$
+$div(f)=\sum_{P\in E} o_P(f)[P]$\\ \pause
+How to compute $o_P(f)$? \\
+$$f=u^{o_P(f)} \cdot g$$ 
+for $g$ with $g(P)\neq 0,\infty$
+and $u$ with $o_P(u)=1$.
+
+\end{frame}
+\begin{frame}
+It can be shown, like in $k(X)$ we always have $deg(div(f))=0$.\\ \pause
+\vspace{0.2in}
+ \textbf{Example:$f=x$}
+ Compute $div(x)$.
+ Can be shown $o_{\infty}(x) =-2$,$o_{(0,0)}(y)=1$.\\ \pause
+ \vspace{0.2in}
+ Since $x=y^2\cdot\frac{1}{x^2-1}$, we have $o_{(0,0)} (x)= 2$.\\
+ \vspace{0.2in}
+So $div(x) = 2([0,0]) - 2[\infty]$. 
+ 
+\end{frame}
+\begin{frame}
+\frametitle{The cool theorem}
+As before, we can define $C\defeq Div^0/(\textrm{principal divisors})$.\\ \pause
+\vspace{0.2in}
+It turns out $C$ is isomorphic to $E$ as a group!\\ \pause
+\vspace{0.2in}
+\end{frame}
+\begin{frame}
+\textbf{Proof sketch:}
+We will show that every divisor $D$ of degree zero 
+can be written as $D= div(g)+ [P]-[\infty]$.\\ \pause
+\vspace{0.2in}
+The idea is that divisors of line functions allow us to compress two points into one:
+If we have $[P_1]+[P_2]$ as part of divisor
+and $l(x,y)$ is the line passing through $P_1,P_2$
+then 
+$$div(l)=[P_1]+[P_2]+[P_3]-3[\infty]$$\\ \pause
+So can switch: $[P_1]+[P_2]--> div(l)-[P_3]-3\cdot [\infty]$
+
+
+
+
+\end{frame}
+
+\end{document}
