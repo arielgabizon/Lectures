@@ -68,7 +68,7 @@ For $h\in H$,
 $div(h)=\sum_{P\in E} a_P[P]$,
 where $a_P$ is the order of $h$ at $P$.\\ \pause
 Define function $\mathrm{sum}:\mathrm{Divisors}\to E$ by
-$$\mathrm{sum}\left(\sum_{P\in E} a_P(P)[P]\right) = \sum_{P\in E} a_P P$$\pause
+$$\mathrm{sum}\left(\sum_{P\in E} a_P[P]\right) = \sum_{P\in E} a_P P$$\pause
 \textbf{cool lemma:} Given a divisor $D$ there exists $h\in H$ with $div(h)=D$ iff
 $deg(D)=0$ and $\mathrm{sum}(D)=\infty$.
 
@@ -98,7 +98,7 @@ $$e(S,T)\defeq \frac{g(S)}{g(\infty)}$$
 
 \end{frame}
 \begin{frame}
- \begin{lemma} For any $S,T\in E[n]$ $e(S,T)\in \mu_n$ -  $\scriptstyle{\mu_n \defeq \set{a\in F, a^n=1}}$
+ \begin{lemma} For any $S,T\in E[n]$ $e(S,T)\in \mu_n$ -  $\scriptstyle{\mu_n \defeq \set{a\in k, a^n=1}}$
  \end{lemma}
  There exists $f\in H$ with $div(f) = n\cdot [T] - n\cdot[\infty]$.\\ \pause
  $$div(f\circ n) = n\sum_{Q\in \roots(T)} [Q] - n \sum_{Q\in E[n]} [Q]$$
@@ -120,7 +120,7 @@ $$= \frac{g(S_1+S_2)}{g(\infty)}= e(S_1+S_2,T)$$\pause
  In $T:$
  Choose $T_1,T_2$ and let $T_3\defeq T_1+T_2$. Let $f_i\in H$ have $div(f_i) = n[T_i]-n[\infty]$
  for $i=1,2,3$.\nl
- By Lemma, there exists $h\in H$ with $div(H)=[T_3]-[T_1]-[T_2]+[\infty]$.\nl
+ By Lemma, there exists $h\in H$ with $div(h)=[T_3]-[T_1]-[T_2]+[\infty]$.\nl
  We have
  $$n\cdot div(h) = div(f_3)-div(f_1)-div(f_2) = div\left(\frac{f_3}{f_1 f_2}\right)$$\pause
  So $h^n = c \frac{f_3}{f_1 f_2} \rightarrow c f_3=h^n f_1 f_2$.\nl
@@ -129,9 +129,10 @@ $$= \frac{g(S_1+S_2)}{g(\infty)}= e(S_1+S_2,T)$$\pause
  
 \end{frame}
 \begin{frame}
- Equivalently, $g_3^n = (h\circ n)^n g_1 ^n g_2^n \Rightarrow g_3 = (h \circ n) g_1 g_2$.\nl
+ Equivalently, $g_3^n = (h\circ n)^n g_1 ^n g_2^n \Rightarrow g_3 = \gamma (h \circ n) g_1 g_2$,
+ for some $\gamma\in \mu_n$\nl
  So 
- $$e(S,T_1+T_2) = \frac{g_3(S)}{g(\infty)}= \frac{g_1(S)}{g_1(\infty)}\frac{g_2(S)}{g_2(\infty)}\frac{h(nS)}{h(\infty)}$$\pause
+ $$e(S,T_1+T_2) = \frac{g_3(S)}{g_3(\infty)}= \frac{g_1(S)}{g_1(\infty)}\frac{g_2(S)}{g_2(\infty)}\frac{h(nS)}{h(\infty)}$$\pause
  $$=e(S,T_1)e(S,T_2).$$
 \end{frame}
 
