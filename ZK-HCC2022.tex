@@ -1,0 +1,342 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{\mathbb F}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+
+\title{\LARGE{zk-proofs - from novice to master}}    % Enter your title between curly braces
+\author{\Large{Ariel Gabizon}}                 % Enter your name between curly braces
+\institute{\normalsize{Aztec}}      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+\note{Talk for 30 minutes} % Add notes to yourself that will be displayed when
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of scontents slide incorporating
+% all \section and \subsection commands
+\begin{frame}
+\emph{``If encryption is  a light switch - on or off, zero-knowledge proofs are a dimmer allowing you to control exactly how much you information expose''} 
+\end{frame}
+
+\begin{frame}
+  \frametitle{The deck of cards:}   % Insert frame title between curly braces
+\textbf{A full deck with red and black cards, face down.}\\
+ \vspace{0.4in}
+\textbf{I take out a red three of hearts.}
+ \vspace{0.4in}
+\textbf{How to convince you I took a red card, without showing which one}
+\end{frame}
+\begin{frame}
+  \frametitle{Proving color to the color blind:}   % Insert frame title between curly braces
+\textbf{A red and green ball, otherwise indentical}\\
+ \vspace{0.4in}
+\textbf{How to convince a color-blind friend they are different?.}
+ \vspace{0.4in}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Counting leaves in a tree:}   % Insert frame title between curly braces
+How to prove you can instantly count the number of leaves on a tree, without disclosing the number of leaves?
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Visual example: Where's Waldo?}   % Insert frame title between curly braces
+ \begin{figure}
+  \includegraphics[width=40pt]{waldopic.png}
+  \includegraphics[width=250pt]{waldo.jpg}
+\end{figure}
+
+\end{frame}
+
+
+% \begin{frame}
+%   \frametitle{Video: the cave}   % Insert frame title between curly braces
+% \end{frame}
+
+
+\begin{frame}
+ \frametitle{3-coloring}
+ How can we prove to someone we can color a graph with 3 colors without leaking the coloring?
+ %Example to use: https://web.mit.edu/~ezyang/Public/graph/svg.html
+\end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{From interactive to non-interactive}
+% \textbf{Fiat-Shamir hueristic:} simulate challenges of the verifier by hash of messages so far
+%  \vspace{0.4in}
+%   
+%   
+% \end{frame}
+% \begin{frame}
+%   \frametitle{From interactive to non-interactive}
+% \textbf{Fiat-Shamir hueristic:} simulate challenges of the verifier by hash of messages so far\\
+%  \vspace{0.4in}
+% \textbf{Homomorphic encryption:} Give challenge in advance in homomorphically encoded form (Craig Gentry video)
+%  \vspace{0.4in}
+% \end{frame}
+% 
+
+\begin{frame}
+  \frametitle{ZK + bitcoin: Zero-Knowledge contingent payments \small{(by Greg Maxwell)}}
+\textbf{Chicken and egg problem:} Alice has sudoku puzzle solution, Bob wants to buy it - who goes first?.\\
+ \vspace{0.4in}
+\textbf{ZKCP:} Protocol where money and solution change hands at exactly same time.
+ \vspace{0.4in}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{ZK + bitcoin: Zero-Knowledge contingent payments \small{(by Greg Maxwell)}}
+\begin{enumerate}
+ \item Alice chooses cryptographic key  $K$, sends $h =HASH(K)$.\pause
+ \item Alice sends encrypted solution $C=E_K(S)$ to Bob; and proves in ZK: ``C is encryption of sudoku solution under key who's hash is $h$.\pause
+  \item Bob makes bitcoin ``hash-locked-transaction'' to Alice with $h$.\pause
+ \item Alice reveals $K$ to unlock her funds.\pause
+ \item Bob can now use $K$ to decrypt solution.\pause
+\end{enumerate}
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{More on the mathy side: Schnorr's discrete log protocol}
+Given $g^x$, prove you know $x$ without revealing it.
+\end{frame}
+\begin{frame}
+  \frametitle{More on the mathy side: Schnorr's discrete log protocol}
+Given $X\defeq g^x$, prove you know $x$ without revealing it.
+\vspace{0.4in}
+\begin{enumerate}
+ \item Prover chooses random $r$, sends $R\defeq g^r$.\pause
+ \item Verifier chooses random $c$\pause
+ \item Prover sends $u\defeq x\cdot c +r$\pause
+\item Verifier checks $X\cdot R = g^u$. 
+\end{enumerate}
+
+\end{frame}
+\begin{frame}
+ \frametitle{In parallel to ZK, a  big breakthrough: succinct verification}
+ \begin{itemize}
+  \item  1990, sumcheck - ``Can prove a sudoku \emph{doesn't} have a solution without verifier going through all options''\pause
+  \item 1998, PCP theorem - ``The proof that a sudoku puzzle has a solution can be encoded such that the verifier only needs to read three bits'' 
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Zero-knowledge and succinctness - a love story}
+\begin{itemize}
+ \item Succinct verification+merkle trees $\rightarrow$ small proofs
+ \item When the proof is small easier to make it zk - less places information can hide.
+\end{itemize}
+ 
+ \begin{figure}
+  \includegraphics[width=150pt]{kilian.png}
+\end{figure}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Succinct arguments in a nutshell}   % Insert frame title between curly braces
+ Public program $T$, public output $z$.\\ \pause
+ \vspace{0.4in}
+ Want to prove ``I know input $x$ for program $T$ that generates output $z$.\\ \pause
+ \vspace{0.4in}
+Want proof size and verification time to be much smaller than run time of $T$. \\ 
+{\small (SNARK:=Succinct Non-Interactive Argument of Knowledge)}\\ \pause
+ \vspace{0.4in}
+ Arithmetization {\small [LFKN,......]}: Reduce claim to claim of form ''I know polynomials that satisfy some identity`` \pause
+\end{frame}
+\begin{frame}
+ \frametitle{Succinct arguments in a nutshell}   % Insert frame title between curly braces
+ Advantage of claims about polynomials is that suffice to check at one random point \\ \pause
+ \vspace{0.4in}
+ But need to solve ''chicken and egg problem``: Prover must commit to polynomials before knowing the challenge point. 
+ \vspace{0.4in}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Polynomial commitment schemes {\small [KZG, 10]}}   % Insert frame title between curly braces
+\begin{itemize}
+ \item Prover send short commitment $\cm(f)$ to polynomial.\pause
+ \item Later Verifier can choose value $i\in \F$.\pause
+ \item Prover sends back $z=f(i)$ ; together with proof $\open{f,i}$ that $z$ is correct.\pause
+\end{itemize}
+KZG give us PCS with commitments and openings are practically 32 bytes.\\ 
+Notation: $\enc{x}=g^x$ where $g$ generator of elliptic curve group.
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Elliptic curve pairings - some serious math magic}
+ Groups $G,G_t$
+ such that
+ \begin{itemize}
+  \item $G$ is an EC with hard discrete log - from $g^x$ hard to find $x$, for generator $g\in G$.\pause %/- written *additively* - $x\cdot g$ , instead of $g^x$.
+  \item We have a map $e:G:\rightarrow G_t$ such that
+  \[e( g^a, g^b) = g_t^{a\cdot b}\]
+  
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+Notation: $\enc{x}=g^x$ where $g$ generator of elliptic curve group.
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The KZG polynomial commitment scheme}
+ Setup: $\enc{1},\enc{x},\ldots,\enc{x^d}$, for random $x\in \F$.\\ \pause
+ \vspace{0.4in}
+ $\cm(f)\defeq   \enc{f(x)}$\\ \pause
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\ \pause
+ \vspace{0.4in}
+ $\verify{\cm,\pi,z,i}:$
+\[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+\end{frame}
+\begin{frame}
+\frametitle{Multiset equality check}
+Given $a,b\in \F^3$, want to check $\{b_1,b_2,b_3\} \stackrel{?}{=} \{a_1,a_2,a_3\}$ \\ \pause
+ \vspace{0.2in}
+
+  
+ Choose random $\gamma\in \F$. Check
+  \[(a_1 + \gamma)(a_2+ \gamma)(a_3 + \gamma) \stackrel{?}{=} (b_1+\gamma)(b_2+\gamma)(b_3+\gamma)\]\pause
+%   \[a'_1 = a_1 + \gamma, a'_2 = a_2 + \gamma, a'_3 = a_3 + \gamma\]
+%  \[b'_1 = b_1 + \gamma, b'_2 = b_2 + \gamma, b'_3 = b_3 + \gamma\]\pause
+
+ \vspace{0.2in}
+ If $a,b$ different as sets then w.h.p products different.\pause
+ 
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Multiset equality check - polynomial version}
+Given $f,g\in \polysofdeg{d}$, want to check $\sett{f(x)}{x\in H} \stackrel{?}{=} \sett{g(x)}{x\in H}$ as multisets \\ 
+ 
+\end{frame}
+\begin{frame}
+\frametitle{Reduces to:}   % Insert frame title between curly braces
+ $H=\set{\gen,\gen^2,\ldots,\gen^n}$.\\
+ \vspace{0.2in}
+ 
+ $\prv$ has sent $f',g'\in \polysofdeg{n}$.\\
+ \vspace{0.2in}
+ Wants to prove:
+ \[\prod_{i\in [n]}  f(\gen^i) = \prod_{i\in [n]} g(\gen^i)\]
+
+ $f\defeq f' +\gamma,g\defeq g'+\gamma$
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Multiplicative subgroups:}   % Insert frame title between curly braces
+ $H=\set{\gen,\gen^2,\ldots,\gen^n=1}$.\\
+ \vspace{0.2in}
+ $L_i$ is i'th lagrange poly of $H$:
+ \[L_i(\alpha^i)=1,L_i(\alpha^j) =0, j\neq i\]
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Checking products with $H$-ranged protocols \small{[GWC19]}}   % Insert frame title between curly braces
+ \begin{enumerate}
+  \item $\prv$ computes $Z$ with 
+  $ Z(\gen)=1, Z(\gen^i) = \prod_{j<i}  f(\gen^j)/g(\gen^j)$.
+  \item Sends $Z$ to $\ideal$.   \pause
+  \item $\ver$ checks following identities on $H$.
+  \begin{enumerate}
+   \item $L_1(X) (Z(X)-1) =0$
+   \item $Z(X) f(X) = Z(\gen\cdot X)g(X)$\pause
+ \end{enumerate}
+
+ \end{enumerate}
+ \vspace{0.2in}
+% We get $\aggdeg{\prot}=n+2n -|H| = 2n$.
+
+
+\end{frame}
+
+% \begin{frame}
+% 
+%  $\cm(f)\defeq   \enc{f(x)}$\\
+%  \vspace{0.4in}
+% $\open{f,i}\defeq \enc{h(x)}$, where
+%  $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+%  \vspace{0.4in}
+%  $\verify{\cm,\pi,z,i}:$
+% \[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+% \end{frame}
+% 
+% 
+%  
+% 
+% 
+% \begin{frame}
+% 
+%  $\cm(f)\defeq   \enc{f(x)}$\\
+%  \vspace{0.4in}
+% $\open{f,i}\defeq \enc{h(x)}$, where
+%  $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+%  \vspace{0.4in}
+%  $\verify{\cm,\pi,z,i}:$
+% \[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+%  \vspace{0.4in}
+% \textbf{Thm}{\footnotesize{[KZG,MBKM]}}: \emph{This works in the Algebraic Group Model.}
+%  \end{frame}
+% 
+% 
+
+\end{document}
