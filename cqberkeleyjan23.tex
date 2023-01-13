@@ -1,0 +1,254 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+\newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+\newcommand{\papertitle}{$\mathfrak{cq}$: Cached quotients for fast lookups}
+%\newcommand{\authorname}}
+\newcommand{\company}{}
+\title{ \bf \papertitle \\[0.72cm]}
+\author{ Liam Eagen \and Dario Fiore \and \textbf{Ariel Gabizon} } 
+
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+\begin{frame}
+  \tableofcontents
+\end{frame}
+\begin{frame}
+\frametitle{Outline}
+ 
+\begin{itemize}
+ \item 
+PCS/KZG review\pause
+\item
+KZG shenanigans 
+\begin{enumerate}
+ \item Committing to sparse polys.
+\item ``cached quotients''\pause
+
+\end{enumerate}
+\item Lookups
+\begin{enumerate}
+ \item Motivation
+\item log derivative protocol[Eagen, Hab\"ock,..]
+\item  $\cq$
+\end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+ \frametitle{Polynomial commitment schemes {\small [KZG, 10]}}   % Insert frame title between curly braces
+\begin{itemize}
+ \item Prover send short commitment $\cm(f)$ to polynomial.\pause
+ \item Later Verifier can choose value $i\in \F$.\pause
+ \item Prover sends back $z=f(i)$ ; together with proof $\open{f,i}$ that $z$ is correct.\pause
+\end{itemize}
+KZG give us PCS with commitments and openings are practically 32-48 bytes.\\ 
+Notation: $\enc{x}=x\cdot g$ where $g$ generator of (an additive) elliptic curve group.
+\end{frame}
+\begin{frame}
+\frametitle{KZG10:}
+ $\srs \defeq \enc{1},\enc{x},\ldots,\enc{x^d}$, for random $x\in \F$.\\ \pause
+ \vspace{0.4in}
+ $\cm(f)\defeq   \enc{f(x)}$\\ \pause
+ \vspace{0.4in}
+$\open{f,i}\defeq \enc{h(x)}$, where
+ $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\ \pause
+ \vspace{0.4in}
+ $\verify{\cm,\pi,z,i}:$
+\[e(\cm-\enc{z},\enc{1}) \stackrel{?}{=} e(\pi, \enc{x-i})\]
+\end{frame}
+
+\begin{frame}
+ \frametitle{Shenanigan $\#1$: Committing to sparse polys}
+\textbf{notation:} parameters $n<<N$, $d\defeq N-1$.
+ \\
+ \vspace{0.4in}
+ $\bigspace=\set{\omega,\ldots,\omega^N}\subset \F$ subgroup of size $N$.\nl
+Say $A\in \polysofdeg{N}$  is $n$-sparse if has at most $n$ non-zeroes on $\bigspace$.\nl
+For $i\in [N]$, denote $A_i\defeq A(\omega^i)$\\
+$L_1(X),\ldots,L_N(X)$ - Lagrange basis of $\bigspace$ - $(L_i)_j=0$ when $i\neq j$.
+\end{frame}
+
+\begin{frame}
+ \frametitle{Committing to sparse polys}
+From $\srs \defeq \enc{1},\enc{x},\ldots,\enc{x^d}$, we can precompute in $O(N\log N)$ operations 
+the KZG commitments of $\bigspace$'s Lagrange Base:\\
+$\srs_L \defeq \set{\enc{L_1(x)},\ldots,\enc{L_N(x)}}$\nl
+
+Now for $n$-sparse $A(X)$ of degree$<N$ compute 
+\[\cm(A)=\enc{A(x)}=\sum_{i\in [N], A_i\neq 0} A_i\cdot \kzg{L_i}
+\]
+
+\end{frame}
+ 
+\begin{frame}
+ \frametitle{Shenanigan $\#2$: ``Cached quotients'' method}
+ \textbf{Scenario:}
+$T(X)\in \polysofdeg{N}$ preprocessed poly.
+$Z_\bigspace(X)$-vanishing poly of $\bigspace$.\\
+Input: $n$-sparse $A(X)\in\polysofdeg{N}$.\nl
+
+$V$ has $\cm(A)$. Want to prove to $V$ that:\\
+$Z_V(X)$ divides $A(X)T(X)$ \textit{using $O(n)$ prover operations}.
+
+\end{frame}
+\begin{frame}
+\frametitle{``Cached quotients'' method}
+There exists quotient $Q_A(X)$ such that $A\cdot T\equiv Z_V\cdot Q_A$.\nl
+
+We'll compute $\kzg{Q_A}$ in $O(n)$ operations:\nl
+
+
+\textbf{preprocessing:}
+For each $i\in [N]$, compute $\kzg{Q_i}$ such that for some $R_i(X)\in \polysofdeg{N}$
+\[L_i(X)\cdot T(X) = Q_i(X)\cdot Z_\bigspace(X) +R_i(X)\]\nl
+
+Also precompute $\kzg{Z_\bigspace},\kzg{T}$
+\end{frame}
+\begin{frame}
+\frametitle{``Cached quotients'' method}
+After preprocessing, prover can compute
+\[\kzg{Q_A}=\sum_{i\in [N],A_i\neq 0} A_i \cdot \kzg{Q_i}\]\nl
+Verifier can check:
+\[e(\kzg{A},\kzg{T})=e(\kzg{Q_A},\kzg{Z_{\bigspace}})\]\nl
+In algebraic group model[FKL] can prove this is sound.
+\end{frame}
+
+
+
+\begin{frame}
+{\huge{Lookup protocols}}
+ \end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+\frametitle{Constraints vs Lookups}
+\textbf{Example:} Check $0\leq x \leq 2^n-1$\nl
+Constraint approach:
+$\prv$ sends $x_0,\ldots,x_{n-1}$
+Proves
+\begin{itemize}
+ \item 
+$\forall i, x_i\in \set{0,1}$
+\item
+$\sum_{i} x_i2^i =x$.\nl
+\end{itemize}
+Requires $n+1$ ``gates''.
+
+\end{frame}
+\begin{frame}
+\frametitle{Lookup approach}
+Preprocess table $T=\set{0,\ldots,2^n-1}$
+Devise protocol to check $x\in T$.\nl
+\textbf{Thm-informal [Arya..plookup]:} Check can be done in amortized $O(1)$ constraints 
+per check, when have $O(|T|)$ checks.\nl
+
+\textbf{Thm [Caulk..$\cq$]:} Can be done in $O(1)$ constraints without need of amortization!
+\end{frame}
+\begin{frame}
+ \frametitle{The question in polynomials:}
+ \textbf{Preprocessed:} $\bigspace\subset \F$ subgroup of size $N$. $H\subset \F$ subgroup of size $n$. $T\in \polysofdeg{N}$.\nl
+ Input: $f\in \polysofdeg{n}$.  $\cm(f)$ given to $V$.\pause
+ 
+\vspace{0.4in}
+ Want to convince $V$ that $f|_H\subset T|_\bigspace$ in $O(n)$ prover operations.
+ 
+\end{frame}
+\begin{frame}
+\frametitle{Log-derivative approach:}
+\textbf{Lemma[Hab\"ock]:}
+$f|_H\subset T|_\bigspace$ if and only if there exists $m(X)\in \polysofdeg{N}$ s.t.  as rational functions
+\[\sum_{i\in [N]} \frac{m_i}{X+ T_i}=  \sum_{a\in H} \frac{1}{X+f(a)}   \]\nl
+\textit{Strategy: check this identity at random $\beta \in \F$.}
+
+\end{frame}
+\begin{frame}
+\frametitle{$\cq$}
+\textbf{Main prover task:}
+Compute polynomial $A(X)$ that interpolates RHS on $\bigspace$, and
+prove it correct:
+\[A_i=\frac{m_i}{\beta+T_i}, \forall i\in [N]\]\nl
+
+Can be done via the ``KZG shenanigans'' we described before.\nl Must compute $\kzg{Q_A}$ where
+\[A(X)(\beta+T(X))-m(X)=Q_A(X)Z_\bigspace(X).\]
+
+\end{frame}
+\end{document}
