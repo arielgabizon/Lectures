@@ -133,7 +133,7 @@ For $x,y \in \{0,1\}^n$, $eq(x,y)=1$ iff $x=y$. \nl
  \frametitle{Main application: Zero Testing}
  \begin{itemize}
   \item  $\prv$ wants to prove to $\ver$ that $f(x)=0$, $\forall x\in \cube$.\pause
-  \item $\ver$ chooses random $\beta \in \F$.
+  \item $\ver$ chooses random $\beta \in \F^n$.
   \item Define $f'(X)\defeq eq(\beta,X) f(X)$.\pause
   \item $\prv$ shows using sumcheck protocol that $\sum_{x\in \cube} f'(x)=0$. This implies desired claim on $f$ w.h.p.
   
@@ -146,7 +146,7 @@ For $x,y \in \{0,1\}^n$, $eq(x,y)=1$ iff $x=y$. \nl
 \begin{itemize}
  \item $\prv$ sends short commitment $\cm(h)$ to $n$-variate mutlilinear  polynomial $h$.\pause
  \item Later $\ver$  chooses  $r\in \F^n$.\pause
- \item $\prv$ sends back $z=f(r)$; together with \emph{short} proof $\open{f,i}$ that $z$ is correct.\pause
+ \item $\prv$ sends back $z=f(r)$; together with \emph{short} proof $\open{f,r}$ that $z$ is correct.\pause
 \end{itemize}
  State of the art: Basefold, Binius, Brakedown, Gemini,Zeromorph,...
 \end{frame}
@@ -162,7 +162,7 @@ For $x,y \in \{0,1\}^n$, $eq(x,y)=1$ iff $x=y$. \nl
 
 \begin{frame}
 \frametitle{GKR Motivation}   % Insert frame title between curly braces
-GKR=``Delegating Computaion: Interactive Proofs for Muggles'' by Goldwasser, Kalai and Rothblum.\nl
+GKR=``Delegating Computation: Interactive Proofs for Muggles'' by Goldwasser, Kalai and Rothblum.\nl
 \emph{Committing to polynomials is expensive. Can we use sumcheck for polynomials we \textbf{don't} have a commitment to?}
 
 \end{frame}
