@@ -33,10 +33,10 @@
 \newcommand{\gen}{\alpha}
 \newcommand{\spac}{\\  \vspace{0.2in} \noindent}
 \newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
-%\setbeamersize{text margin left=3mm,text margin right=3mm} 
-\title{\large{On SNARKs with universal updatable setup}}    % Enter your title between curly braces
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\title{\large{A  introduction to Hasse's theorem with some cool facts on Ellipitic curves along the way}}    % Enter your title between curly braces
 \author{{Ariel Gabizon}\\                 % Enter your name between curly braces
-\tt{\small{Aztec Protocol} } }      % Enter your institute name between curly braces
+\tt{\small{Aztec} } }      % Enter your institute name between curly braces
 \date{}                    % Enter the date or \today between curly braces
 %\usefonttheme{professionalfonts}
 %\usefonttheme[onlymath]{serif}
@@ -46,7 +46,6 @@
 \begin{frame}
   \titlepage
 \end{frame}
-\note{Talk for 30 minutes} % Add notes to yourself that will be displayed when
                            % typeset with the notes or notesonly class options
 
 %\section[Outline]{}
@@ -56,6 +55,126 @@
 %\begin{frame}
   %\tableofcontents
 %\end{frame}
+
+\begin{frame}
+Should this talk be at zksummit
+
+If so because of works like this:
+ecfft
+
+\end{frame}
+\begin{frame}
+How to get ec with n bits?
+
+
+Hasse's thm
+
+Just pick prime p with n bits
+any a,b with 4a^3+27b^2/neq 0
+
+and take curve y^2=x^3+ax+b
+will have p+1 -+ 2sqrt p points
+\end{frame}
+
+\begin{frame}
+set a=p+1-N
+
+L(X)
+=X^2-aX+p
+
+
+
+
+so L(X)= (x-a1)(x-a2)
+
+Claim: enough to show L's roots are not real
+
+
+==>
+\Delta=
+a^2-4c<0
+
+(for prime p cannot hit the = case cause 2sqrt(p) is not an integer)
+
+
+\end{frame}
+Sidenote: exists curves over extension field where (x^p,y^p) = b(x,y) for some b
+i.e. frob is integer
+==================
+
+
+
+
+===========
+Frob:
+phi:(x,y)->(x^p,y^p)
+
+
+L is char polynomial of phi/phi is a zero of L:
+For any curve point in E(\bar{F}_p)
+(x^p^2,y^p^2)-a(x^p,y^p)+p(x,y)=0
+
+maybe interesting in future for snark optimizers (trivial for points in F_p)
+
+p*(x,y) = a(x^p,y^p) - (x^p^2,y^p^2)
+
+
+Interesting proof element:
+E_n={P\in E,n*P=0}. When gcd(n,p)=1 E_n= Z_n\times Z_n
+so phi action on E_n can be described by 2\times 2 matrix phi_n
+Can show L is char poly
+det(phi_n) = p mod n,   trace(phi_n) = a mod n
+Can show matrix is zero of L for all n r.p. to p
+
+
+===========
+
+We want to show phi "corresponds" to imaginary number that is also root of L
+
+detour: complex multiplication && endomorhpisms
+Endomorphisms: 
+"Hommorhpisms that "know" the group is an EC"
+phi(P+Q) = phi(P)+phi(Q)
+phi(0) = 0
+If P=(x,y)
+phi(x,y) = (r(x,y),s(x,y))
+for rational func r,s
+
+Examples
+P-> c*P   for fixed c
+P->phi(P) 
+
+in fact, except for super-singular curves, all endomorphisms over F_p are combinations 
+of these two.
+
+===========
+
+Thm:
+Usually, 
+The ring of endomorphisms of E is isomorphic to a ring
+Z+Z*a
+
+for some complex number a (p. 314, a = c*sqrt(-d) for pos integer c)
+
+So phi corresponds either to element t of Z, which would mean t|p - not possible when t is prime.
+So t is complex.
+
+==========
+A little history, where did this thm come from?
+Tori/curve equivalnce over complex numbers.
+
+
+===========
+
+
+
+
+
+
+
+
+
+
 
 
 

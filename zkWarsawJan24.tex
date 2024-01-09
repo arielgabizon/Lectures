@@ -1,0 +1,263 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz,circuitikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+\usepackage[export]{adjustbox}
+\everymath{\color{purple}}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\bin}{\ensuremath{\set{0,1}}}
+\newcommand{\cube}{\ensuremath{\bin^n}}
+
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+% \newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\kzg}[1]{\cm(#1)}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+% \newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+% \newcommand{\caulk}{{\mathsf{Caulk}}}
+% \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{The GKR method}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon}\\                 % Enter your name between curly braces
+\tt{\footnotesize{Zeta Function Technologies}                                       } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+% \begin{frame}
+% \large{plonk is a protocol to make short proofs about circuit satisfiability.}
+%  \begin{figure}
+%   \includegraphics[width=260pt]{circuit.png}
+% \end{figure}
+% \end{frame}
+\begin{frame}
+ \frametitle{Overview}
+ \begin{itemize}
+  \item Mutlilinear functions and sumcheck basics
+  \item GKR - motivation and example.
+ \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Multilinear polynomials}
+ Polynomials that are linear in each variable:\nl 
+ \textbf{Example:}
+ equality  function\pause
+%  $eq:\F^{2n}\to \F$.
+ \[eq(x,y)=\prod_{i\in [n]} (x_i y_i +(1-x_i)(1-y_i))\]\pause
+For $x,y \in \{0,1\}^n$, $eq(x,y)=1$ iff $x=y$. \nl
+ ``Multilinear Lagranges'': $L_x(Y)=eq(x,Y)$ for some $x\in \cube.$\nl
+ We have $L_x(x)=1$ and $L_x(y)=0$ for any $y\neq x$ in $\cube$.
+ % \begin{itemize}
+%  \item 
+% \end{itemize}
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Sumcheck basics}
+ $\prv$ has $n$-variate poly $f$ of degree$\leq 3$ in each variable.\nl
+ Wants to prove to \ver
+ \[\sum_{x\in\cube} f(x)=0\]\nl
+ The {\small \color{green}[LFKN]} \textbf{sumcheck protocol} between $\prv$ and $\ver$ reduces this claim
+ to claim of form $f(r)=v$ for random $r\in \F^n$.\nl
+ 
+ \emph{Reduction doesn't require $\prv$ to do FFT's or commit to other polynomials }
+
+\end{frame}
+\begin{frame}
+ \frametitle{Main application: Zero Testing}
+ \begin{itemize}
+  \item  $\prv$ wants to prove to $\ver$ that $f(x)=0$, $\forall x\in \cube$.\pause
+  \item $\ver$ chooses random $\beta \in \F$.
+  \item Define $f'(X)\defeq eq(\beta,X) f(X)$.\pause
+  \item $\prv$ shows using sumcheck protocol that $\sum_{x\in \cube} f'(x)=0$. This implies desired claim on $f$ w.h.p.
+  
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Polynomials commitment schemes[KZG] (for mutlilinear polynomials)}
+\begin{itemize}
+ \item $\prv$ sends short commitment $\cm(h)$ to $n$-variate mutlilinear  polynomial $h$.\pause
+ \item Later $\ver$  chooses  $r\in \F^n$.\pause
+ \item $\prv$ sends back $z=f(r)$; together with \emph{short} proof $\open{f,i}$ that $z$ is correct.\pause
+\end{itemize}
+ State of the art: Basefold, Binius, Brakedown, Gemini,Zeromorph,...
+\end{frame}
+
+\begin{frame}
+ \frametitle{ Zero Testing - typical example}
+ $\prv$ has multilinears $f_1,f_2,f_3$. $\ver$ has $\cm(f_1),\cm(f_2),\cm(f_3)$.\nl
+ 
+ $\prv$ wants to prove to $\ver$ that 
+ \[\forall x\in\cube: f_1(x)f_2(x)-f_3(x) =0.\]
+\end{frame}
+
+
+\begin{frame}
+\frametitle{GKR Motivation}   % Insert frame title between curly braces
+GKR=``Delegating Computaion: Interactive Proofs for Muggles'' by Goldwasser, Kalai and Rothblum.\nl
+\emph{Committing to polynomials is expensive. Can we use sumcheck for polynomials we \textbf{don't} have a commitment to?}
+
+\end{frame}
+\begin{frame}
+ \frametitle{GKR idea - iterative sumcheck}
+ When we don't have a commitment to the polynomial we're summing, reduce the random evaluation at the end
+ to \emph{another} sumcheck over a different polynomial\nlnp
+ 
+ \[\mathrm{sum}\stackrel{sumcheck}{\to}\mathrm{rand eval} \stackrel{reduction}{\to}\mathrm{sum}\stackrel{sumcheck}{\to}\ldots\]
+\end{frame}
+
+\begin{frame}
+
+\frametitle{Example from [Thaler13]}
+    \begin{circuitikz}
+        % Multiplication node
+        \draw (3,3.5) node[draw,circle,minimum size=0.1 cm,label=$a_1\cdot a_2\cdot a_3\cdot a_4$] (mul3) {$\times$};
+        % Multiplication node
+        \draw (1,1.75) node[draw,circle,minimum size=0.1 cm] (mul2) {$\times$};
+        
+        
+        % Inputs with arrows at the bottom
+        \draw[-{Triangle[length=3mm,width=2mm]}] (0,0) node[left] {$a_1$} -- (mul2.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (2,0) node[right] {$a_2$} -- (mul2.south);
+        % Multiplication node
+        \draw (5,1.75) node[draw,circle,minimum size=0.1 cm] (mul) {$\times$};
+        
+        
+        % Inputs with arrows at the bottom
+        \draw[-{Triangle[length=3mm,width=2mm]}] (4,0) node[left2] {$a_3$} -- (mul.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (6,0) node[right2] {$a_4$} -- (mul.south);
+        % arrows to final mult gate 
+        \draw[-{Triangle[length=3mm,width=2mm]}] (mul.north) -- (mul3.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (mul2.north) -- (mul3.south);
+    \end{circuitikz}
+    \end{frame}
+
+\begin{frame}
+
+\frametitle{Example from [Thaler13]}
+    \begin{circuitikz}
+        % Multiplication node
+        \draw (3,3.5) node[draw,circle,minimum size=0.1 cm,label=$a_1\cdot a_2\cdot a_3\cdot a_4$] (mul3) {$\times$};
+        % Multiplication node
+        \draw (1,1.75) node[draw,circle,minimum size=0.1 cm] (mul2) {$\times$};
+        
+        
+        % Inputs with arrows at the bottom
+        \draw[-{Triangle[length=3mm,width=2mm]}] (0,0) node[left] {$a_1$} -- (mul2.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (2,0) node[right] {$a_2$} -- (mul2.south);
+        % Multiplication node
+        \draw (5,1.75) node[draw,circle,minimum size=0.1 cm] (mul) {$\times$};
+        
+        
+        % Inputs with arrows at the bottom
+        \draw[-{Triangle[length=3mm,width=2mm]}] (4,0) node[left2] {$a_3$} -- (mul.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (6,0) node[right2] {$a_4$} -- (mul.south);
+        % arrows to final mult gate 
+        \draw[-{Triangle[length=3mm,width=2mm]}] (mul.north) -- (mul3.south);
+        \draw[-{Triangle[length=3mm,width=2mm]}] (mul2.north) -- (mul3.south);
+    \end{circuitikz}\nlnp
+    $\prv$ has $f(Y_1,Y_2)$. $\ver$ has $\cm(f)$\nl
+    Wants to prove to  $\ver$ correctness of   $u\defeq f(0,0)\cdot f(0,1)\cdot f(1,0)\cdot f(1,1)$.
+    \end{frame}
+
+\begin{frame}
+ Define multilinear  ``Intermediate layer function'' $g$:\\
+ $g(0)\defeq f(0,0)\cdot f(0,1)$\\
+ $g(1)\defeq f(1,0)\cdot f(1,1)$.\nl
+ Our claim is $g(0)\cdot g(1)=u$.\nl
+Exercise: Can reduce this to evaluating $g(r)$ for one random $r\in \F$.\nl
+\textbf{Main goal:} Avoid needing to compute  $\cm(g)$ as ``traditional SNARKs'' would do!
+\end{frame}
+\begin{frame}
+ \frametitle{Interlude: Representing mutlilinear functions via $eq$}
+ Recall
+ \[eq(x,y)=\prod_{i\in [n]} (x_i y_i +(1-x_i)(1-y_i))\]\pause
+\textbf{Claim:} When $h$ is multilinear, we have for any $r$
+\[h(r)=\sum_{x\in \cube} eq(r,x)h(x)\]
+\end{frame}
+
+\begin{frame}
+ \frametitle{Heart of GKR - representing $g(r)$ as sum over $f$}
+ \[\color{purple}{g(r)=eq(r,0) f(0,0)f(0,1) +eq(r,1)f(1,0)f(1,1)}\]\pause
+ \[\color{purple}=\sum_{x\in \bin} f'(x)\]
+ where $f'(X)\defeq eq(r,X)f(X,0)f(X,1)$.\nl
+ Thus, using SCP can reduce evaluating $g(r)$ to evaluating $f'(r_2)$ for a random $r_2\in \F$.
+\end{frame}
+
+\begin{frame}
+ \frametitle{Evaluating $f'(r_2)$}
+ \[f'(r_2)=eq(r,r_2) f(r_2,0) f(r_2,1)\]
+ $\ver$ can evaluate $eq(r,r_2)$ itself.\nlnp
+ Since it has $\cm(f)$ it can ask $\prv$ for $f(r_2,0),f(r_2,1)$ with proofs of correctness.
+\end{frame}
+
+ 
+\end{document}
