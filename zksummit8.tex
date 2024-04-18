@@ -1,0 +1,272 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}_p}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\title{\large{A gentle  introduction to Hasse's theorem}}    % Enter your title between curly braces
+\author{{Ariel Gabizon}\\                 % Enter your name between curly braces
+\tt{\small{Aztec} } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+                           % typeset with the notes or notesonly class options
+
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+%\begin{frame}
+  %\tableofcontents
+%\end{frame}
+
+\begin{frame}
+\frametitle{Motivation}
+Opening the black-box of elliptic curves can 
+bring interesting results.
+ \begin{figure}
+  \includegraphics[width=150pt]{zkecc.png}
+% \end{figure}
+%  \begin{figure}
+  \includegraphics[width=150pt]{ecfft.png}
+\end{figure}
+
+\end{frame}
+\begin{frame}
+Curve $E$ over \F.
+\[y^2=x^3+ax+b\]\pause
+ $N\defeq$ number of points over \F.\pause
+ \begin{itemize}
+ \item $N\geq 1$ - cause always have point at infinity.\pause
+ \item $N\leq 2p+1$ - cause at most two $y$'s for each $x\in \F$.\nl
+\end{itemize}
+\hl{Hasse's thm:} Set $a\defeq p+1-N$. Then $|a|\leq 2\sqrt p$.
+\end{frame}
+\begin{frame}
+\frametitle{Hasse's thm is foundational for EC cryptography}
+\hl{Hasse's thm:} $|p+1 -N|\leq 2\sqrt p$.\nlnp
+\textit{Want $E$ of size $N\sim 2^m$?} \nl
+
+
+Just pick prime $p$ with $m$ bits,
+and take \emph{any} elliptic curve $E$ over \F.\nl
+% any $a,b\in\F$  with $4a^3+27b^2\neq 0$\nlnp
+
+% and take curve $y^2=x^3+ax+b$.\nl
+\end{frame}
+
+\begin{frame}
+\frametitle{The proof begins with some junior-high algebra}
+set $a\defeq p+1-N$.
+
+and $L(X)
+\defeq X^2-aX+p
+$\nl
+
+
+% Write $L(X)=(X-\omega_1)(X-\omega_2), \omega_i\in \mathbb{C}$. \pause
+% Enough to show $\omega_1,\omega_2\notin {\mathbb R}$:\nl
+Enough to show $L$'s roots are not in $\mathbb{R}$:\nl
+
+It would imply:
+\[\Delta=
+a^2-4p<0
+\rightarrow |a|<2\sqrt p\]\nl
+% (for prime p cannot hit the = case cause 2sqrt(p) is not an integer)
+% We begin by showing an \textbf{endomorphism} is a ``root'' of $L$.
+\end{frame}
+\begin{frame}
+$a\defeq p+1-N$. $L(X)= X^2-aX+p$\nl
+ \hl{Claim:} When $p$ is prime, $L$'s roots cannot be in $\mathbb{Z}$.\nl
+ \hl{proof:}
+ Write $L(X)=(X-\omega_1)(X-\omega_2)$.
+%  where $\omega_1,\omega_2\in \mathbb{C}$.
+ We have $p=\omega_1\cdot \omega_2$, $a=\omega_1+\omega_2$.\nl
+ Only options for $\set{\omega_1,\omega_2}$:\nl
+ \begin{itemize}
+  \item $\set{1,p}$,  but then $a=p+1\Rightarrow N=0$.\pause
+  \item $\set{-1,-p}$, but then $N=2p+2$. 
+ \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Elliptic curve endomorphisms}
+
+% \textbf{EC Endomorphisms:} 
+\emph{Homomorphisms $\psi:E(\Fclosure)  \to E(\Fclosure)$ that ``know'' $E$ is an EC}\nl
+\begin{itemize}
+ \item 
+$\psi(P+Q) = \psi(P)+\psi(Q)$
+\item $\psi(0) = 0$\pause
+\item When $P=(x,y)$,
+$\psi(x,y) = (r(x,y),s(x,y))$
+for some rational functions $r,s$ over \F.\pause
+\end{itemize}
+EC endomorphisms are a \emph{ring} $\mathrm{END}_E$: $\psi_1\cdot \psi_2(P) \defeq \psi_1(\psi_2(P))$.
+\end{frame}
+\begin{frame}
+\frametitle{Elliptic curve endomorphisms}
+
+\hl{Example 1:}
+$P-> c\cdot P$   for  integer c. \pause
+
+% In fact, except for super-singular curves, all endomorphisms over $\F$ are combinations 
+% of these two.
+% \textit{(Let's assume $E$'s not super-singular from now on)}
+\end{frame}
+
+\begin{frame}
+\frametitle{The Frobenius endomorphism}
+
+\hl{Example 2:}
+ $\phi(x,y)=(x^p,y^p)$.\pause
+ \begin{itemize}
+  \item Not the identity map because we're looking at points over \Fclosure.\pause
+  \item It's really an endomorphism, basically cause $(A+B)^p = A^p+B^p$:\pause
+  \[y^2-x^3-ax-b=0\]\pause
+  \[\Rightarrow \left(y^2-x^3-ax-b\right)^p=0\]\pause
+  \[\Rightarrow (y^p)^2-(x^p)^3-a(x^p)-b =0\]\pause
+  \[\Rightarrow (x^p,y^p)\in E.\]
+
+ \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+% \frametitle{First we find a root in $\mathrm{END}_E$..}
+$\phi(x,y)=(x^p,y^p)$. $L(X)=X^2-aX+p$.\nlnp
+% Reminder: $L
+
+\hl{Lemma:} $\phi$ is a ``root'' of $L$.\nl
+I.e., $\phi^2-a\cdot \phi + p$ is the all zero map.\nl
+i.e.,  $\forall (x,y)\in E$:
+\[ (x^{p^2},y^{p^2})-a\cdot (x^p,y^p)+p\cdot (x,y)=0_E\]\nl
+
+maybe interesting for snark optimizers: 
+
+$p\cdot (x,y) = a\cdot (x^p,y^p) - (x^{p^2},y^{p^2})$
+\end{frame}
+
+% \begin{frame}
+% \textit{Interesting proof elements of lemma:}
+% 
+% $E_n\defeq \set{P\in E,n\cdot P=0}$. When $gcd(n,p)=1$, $E_n=\mathbb{Z}_n\times \mathbb{Z}_n$ .\nl
+% $\rightarrow$ $\phi$ action on $E_n$ can be described by $2\times 2$ matrix $\phi_n$ over $\mathbb{Z}_n$.\nl
+%  Can show: 
+% $\mathrm{det}(\phi_n) = p\; \mathrm{mod}\; n$,   $\mathrm{trace}(\phi_n) = a\; \mathrm{mod} \;n$\nlnp
+% Using Cayley-Hamilton follows that $L(\phi_n)=0$.
+% 
+% 
+% \end{frame}
+\begin{frame}
+ $\phi$ is a ``root'' of $L$. Left to show it corresponds to a complex imaginary number that is also a root of $L$.\nl
+ This is where \emph{complex multiplication} comes in.
+\end{frame}
+
+\begin{frame}
+\frametitle{Complex multiplication over characteristic $p$}
+\hl{Thm:}There is an isomorphism $T$ from
+ $\mathrm{END}_E$ to a ring
+$R_E = \mathbb{Z}+\mathbb{Z}\cdot d$, for some $d\in \mathbb{C}\setminus \mathbb{R}$.\nl
+% (p. 314, a = c*sqrt(-d) for pos integer c)
+
+\[L(T(\phi))=T(L(\phi))=T(0_{\mathrm{END}_E})=0\]\nl
+So $\omega\defeq T(\phi)$ is a root of $L$!\nl
+We showed before $\omega \notin \mathbb{Z}$ so must have 
+$\omega\notin \mathbb{R}$ and we're done!
+\end{frame}
+\begin{frame}
+\frametitle{Historical context}
+Where did this last thm come from?
+Torus/curve equivalence over complex numbers.\nl
+$L$ is related to the zeta function of the elliptic curve, and RH for curve actually shows
+$|\omega_1|=|\omega_2|=\sqrt p$. 
+
+\end{frame}
+
+
+
+\begin{frame}
+ \hl{Sources:}
+ \begin{itemize}
+  \item 
+
+ \emph{Elliptic curves number theory and cryptography} - Lawrence C. Washington.
+  \item 
+ \emph{The Riemann Hypothesis in Characteristic $p$ in Historical Perspective} - Peter Roquette
+ \end{itemize}
+ \vspace{0.5in}
+  Thanks to Aztec crypto team for comments!
+\end{frame}
+
+
+
+
+
+
+
+
+
+
+% \begin{frame}
+% Sidenote: exists curves over extension field where$ (x^p,y^p) = b(x,y)$ for some b
+% i.e. frob is integer
+% \end{frame}
+
+\end{document}

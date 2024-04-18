@@ -1,0 +1,239 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+% \usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts,amsmath}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+ \usepackage{numdef,graphicx}
+\usepackage{framed} 
+
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+%  \usepackage[latexcolors]
+\everymath{\color{purple}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+% \newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+\newcommand{\enc}[1]{\ensuremath{#1\cdot G}}
+\newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}}
+\newcommand{\flookup}{{\mathsf{\mathpgoth{Flookup}}}}
+\newcommand{\baloo}{{\mathrm{ba}\mathit{loo}}}
+\newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\caulk}{{\mathsf{Caulk}}}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+\newcommand{\papertitle}{Cached quotients and lookups}
+%\newcommand{\authorname}}
+\newcommand{\company}{}
+\newcommand{\witsize}{{n}}
+\newcommand{\witruntime}{\ensuremath{\witsize\log\witsize}\xspace}
+\newcommand{\tabsize}{{N}}
+\newcommand{\tabruntime}{\ensuremath{\tabsize\log\tabsize}\xspace}
+\newcommand{\Gone}{{\mathbb G}_1}
+\newcommand{\Gi}{\ensuremath{{\mathbb G}_i}\xspace}
+\title{ \bf \papertitle \\[0.72cm]}
+\author{Ariel Gabizon \\
+Zeta Function Technologies} 
+
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+                           % typeset with the notes or notesonly class options
+\begin{frame}
+\frametitle{Constraints vs Lookups}
+\textbf{Example:} Check $0\leq x \leq 2^n-1$\nl
+\textbf{Constraint approach:}\\
+Prover sends $b_0,\ldots,b_{n-1}$. Shows:
+\begin{itemize}
+ \item 
+$\forall i, b_i\in \set{0,1}$
+\item
+$\sum_{i} b_i2^i =x$.\nl
+\end{itemize}
+Requires $n+1$ constraints.
+
+\end{frame}
+\begin{frame}
+\frametitle{Lookup approach}
+Preprocess table $T=\set{0,\ldots,2^n-1}$.Let $N:=|T|$. \\ \noindent 
+Devise protocol to check $x\in T$.\nl
+\textit{\color{blue}{Old results - good when amortized:}}\\ \noindent
+\noindent
+\textbf{Thm[plookup]:}  Can check $m$ different $x$'s are in $T$ in $O(m+ N)$
+ constraints.\nl
+
+\textit{\color{blue}{New results - prover doesn't pay for table size!!\\}}
+\textbf{Thm [Caulk...$\cq$]:} After $O(N\log N)$ preprocessing, can check $x\in T$, in $O(1)$ constraints. 
+\end{frame}
+%\section[Outline]{}
+
+% Creates table of contents slide incorporating
+% all \section and \subsection commands
+% \begin{frame}
+%   \tableofcontents
+% \end{frame}
+% \begin{frame}
+% \frametitle{Outline}
+%  
+% \begin{itemize}
+%  \item 
+% PCS/KZG review\pause
+% \item
+% KZG shenanigans 
+% \begin{enumerate}
+%  \item Committing to sparse polys.
+% \item ``cached quotients''\pause
+% 
+% \end{enumerate}
+% \item Lookups
+% \begin{enumerate}
+%  \item Motivation
+% \item  New results:$\cq$
+% \end{enumerate}
+% \end{itemize}
+% \end{frame}
+% 
+\begin{frame}
+{\large{\textbf{Rest of talk:} explain main technical component of new works - \emph{cached quotients}}}\pause
+\emph{First - a brief recap of polynomial commitment schemes..}
+
+ \end{frame}
+\begin{frame}
+ \frametitle{The KZG Polynomial commitment scheme}   % Insert frame title between curly braces
+ $G$ - generator of pairing friendly elliptic curve group.\\
+ \vspace{0.2in}
+ $\srs \defeq \enc{1},\enc{x},\ldots,\enc{x^d}$, for random $x\in \F$.\nl
+ For $f\in \F[X]$ of degree $d$: 
+$$\color{purple} \cm(f)\defeq   \enc{f(x)}$$\nl
+ \textbf{Central Feature:}
+ Given $\cm(f)$ and any $a\in \F$; there is short proof for correctness of $z=f(a)$. 
+\end{frame}
+\begin{frame}
+ \frametitle{The KZG Polynomial commitment scheme}   % Insert frame title between curly braces
+ $\srs \defeq \enc{1},\enc{x},\ldots,\enc{x^d}$, for random $x\in \F$.\\ 
+ $\cm(f)\defeq   \enc{f(x)}$\\ 
+ \vspace{0.2in}
+ Nice features:\pause
+ \begin{itemize}
+  \item \textbf{Linearity:} $\cm(f+g) = \cm(f)+\cm(g)$\pause
+  \item \textbf{Product checks:} Given $\cm(f_1),\cm(f_2),\cm(g_1),\cm(g_2)$ can check $f_1(X)f_2(X)\stackrel{?}{\equiv} g_1(X)g_2(X)$ via pairings.\\
+  (Secure in the Algebraic Group Model)
+ \end{itemize}
+
+\end{frame}
+\begin{frame}
+ \frametitle{Cached Quotients - a motivating example from $\caulk$[ZBKMN]}\pause
+ $Z_T(X)=\prod_{a\in T} (X-a)$ 
+ a vanishing polynomial of a subset $T\subset \F$ .\nl
+ $\cm(Z_T),\cm(f)$ given to verifier.\pause \\
+ Prover wants to show $f=Z_S$ for some $S\subset T$.\nl
+ 
+ Can we do this in $O(|S|)$ prover operations?(think $|S|<<|T|$)
+\end{frame}
+\begin{frame}
+\frametitle{Cached quotients idea:}
+ The quotient $Z_{T\setminus S}(X) =\frac{Z_T(X)}{Z_S(X)}$ is a ``witness'' to $S\subset T$. \nl
+\begin{itemize}
+ \item Enough to compute \textbf{commitment} to $Z_{T\setminus S}$. \pause
+ \item This commitment is a \textbf{sparse combination} of commitments we can \textbf{precompute}.
+\end{itemize}
+\emph{details in next slide..}
+\end{frame}
+
+\begin{frame}
+% \frametitle{Fractional decomposition:}
+ For each $i\in T$, let $g_i(X)\defeq Z_{T\setminus\set{i}}(X)$.\nl
+ We have {\small[Tomescu et. al]}
+ \[Z_{T\setminus S} (X) = \sum_{i\in S} c_i\cdot g_i(X)\]
+ for some $c_i\in \F$.\nl
+ 
+
+ We precompute $\cm(Z_T),\sett{\cm(g_i)}{i\in T}$.\nlnp
+\end{frame} 
+ \begin{frame}
+ Prover then computes in $|S|$ operations:
+ \[\color{purple}\pi:=\cm(Z_{T\setminus S}) = \sum_{i\in S} c_i\cdot \cm(g_i)\]\nl
+Verifier checks with pairing that:
+\[\color{purple}e(\cm(f),\pi) =e(\cm(Z_T),\enc{1})\]
+\end{frame}
+
+\begin{frame}
+\frametitle{Historical perspective: A trilogy of pairing-based SNARKs}\pause
+
+\begin{enumerate}
+ \item \textbf{A new hope (for SNARKs, not the universe)} - [Groth10,\textbf{GGPR},...,Groth16]\pause 
+ \vspace{0.2in}
+ \item  \textbf{The polynomial commitment scheme strikes back} - [vsql,\textbf{Sonic},Plonk,Marlin,...]\pause 
+ \vspace{0.2in}
+ 
+ \item  \textbf{Return of the pairing} - [Caulk,...,cq,..]
+ 
+\end{enumerate}
+
+\end{frame}
+\begin{frame}
+\frametitle{Other Application in Chapter 3: lincheck }
+Fixed $n\times n$ matrix $M$.\nl
+Prover has poly $f\in \polysofdeg{n}$.
+Verifier $\cm(f)$.
+$a\defeq f|_H$ for subgroup $H$ of size $n$.\nl
+
+\textbf{cq-lin:} After preprocessing of $M$, prover can show $M\cdot a =0$
+\emph{in $O(n)$ operations.}\nl
+
+
+
+\end{frame}
+
+\end{document}
