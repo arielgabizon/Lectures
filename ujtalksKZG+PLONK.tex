@@ -679,19 +679,125 @@ We precompute the KZG commitments \com{A},\com{M} of $A,M$ and send them to \ver
 
 One can 
 
-
+\section{Lecture 3: the PlonK permutation argument (based on Bayer-Groth)}
 \subsection{Copy checks via permutations}
+Let $v=(a,b,c)$, and redefine $n$ as $n=|v|$. In \prog we have a bunch of constraints $v_i=v_j$ for $i,j \in [3n]$.
+We can reduce all checks to one \emph{permutation check}.
+This mean checking for some fixed permutation $\sigma$ on $[n]$, that $\sigma(v)=v$.
+Here we define $\sigma(v)\in \F^n$ by $\sigma(v)_{\sigma(i)} =v_i$ $\forall\; i\in [n]$.
+\textbf{example:}
+Say we have the constraints $v_1=v_2, v_2=v_7, v_5=v_6$.
+Define $\sigma= (127)(56)$.
+Then $v$ satisfies the copy constraints iff $v=\sigma(v)$.
 
 
+\subsection{Mutliset checks via grand products}
+Let's look at a related problem that we will use soon for the permutation check.
+Now \prv has  \emph{two} vectors $f,g$ of size $n$ and wishes to show to \ver they are equal as multisets,
+i.e. that there is \emph{some} permutation $\sigma$ such that $g=\sigma(f)$.
+
+Here is a protocol for this.
+\begin{enumerate}
+ \item \ver sends random $\gamma\in \F$
+ \item \prv shows to \ver  that 
+ \[\prod_{i\in [n]} (f_i+\gamma) = \prod_{i\in [n]}(g_i+\gamma)\]\label{eq:prod}
+\end{enumerate}
+\begin{claim}
+Let $r=|\F|$.
+ The check in equation \ref{eq:prod} holds with probability one if $f,g$ are mutliset equal,
+ and probability at most $n$ if they are not.
+\end{claim}
+\begin{proof}
+Define the polynomials 
+$F(X)\defeq \prod_{i\in [n]} (f_i+X),G(X)\defeq \prod_{i\in [n]} (g_i+X)$
+We are checking $F(\gamma)=G(\gamma)$. If $f,g$ are mutliset equal $F\equiv G$ so this holds for all $\gamma$.
+If they are not $F\not\equiv G$ so they can be equal for at most $n$ $\gamma\in \F$.
+\end{proof}
 
 
+One main question is how \prv efficiently shows to \ver that equation \ref{eq:prod} holds when \ver only 
+has commitments to $f,g$? We will see a solution soon!
+\subsection{Permuations via mulitset checks}
+For our SNARK, we wish to check that $g=\sigma(f)$ for a \emph{fixed} permutation $\sigma$.
+We show we can reduce this check to a multiset check.
+\begin{claim}
+ Given a permutation $\sigma$ on $[n]$ and vectors $f,g\in \F^n$, we have $g=\sigma(f)$ if and only if
+ the sets of pairs $A\defeq \set{(f_i,i)}_{i\in [n]}$ and $B\defeq \set{(g_{i},\sigma(i)}_{i\in [n]}$
+ are equal as (multi)sets.
+\end{claim}
 
-
-\subsection{Permuations via grand products}
-
+The mulitset protocol dealt with scalars, not tuples.
+Here we can use a little randomness to reduce the scalars to tuples.
+\begin{claim}
+ Given sets of pairs $A,B$ as in the claim above and $\beta \in \F$.
+ Define the mutlisets $A'=\defeq \set{f_i+\beta \cdot i}$, $B'\defeq \set{g_i + \beta \cdot \sigma(i)}$.
+ Then if $A,B$ are different as sets, then $A',B'$ are different as multisets except with probability $n/r$ over $\beta$
+\end{claim}
+\begin{proof}
+If $A\neq B$, there is some pair $(b_1,\beta b_2)\in B\setminus A$.
+For any fixed $(a_1,a_2)\in A$ the probability that $a_1+\beta a_2= b_1+\beta b_2$ is at most $1/r$.
+Now do a union bound over elements of $A$.
+\end{proof}
 
 
 \subsection{grand products via polynomial equations}
+Now we deal with the following question. Suppose \ver has a KZG-commitment $\cm(f)$ to a polynomial of degree $<n$ (as before 
+think of $f$ as interpolating the vector $f\in \F^n$ over $H$).
+Suppose that $\prod_{i\in [n]} f_i =1$.  How can \prv prove this to \ver?
+
+\textbf{Protocol:}
+\begin{enumerate}
+ \item \prv interpolates on $H$ the vector $Z$ with values 
+ $Z_1=1$, $Z_i=\prod_{j<i} (f_j)$ for $i\in \set{2,\ldots,n}$.
+ I.e $Z(g^i) = Z_i$ $\forall i\in [n]$.
+ \item \prv computes and send $\com{Z}$ to \ver.
+ \item \ver sends random $\alpha\in \F$ to \prv.
+ \item \prv computes poly:
+ \[T(X)=\frac{L_1(X)(Z(X)-1)) + \alpha(Z(g\cdot X)-Z(X)f(X))}{Z_H(X)}\]
+ \item \ver sends random $\gamma \in \F$ to \prv. 
+ \item \prv sends $\bar{T}\defeq T(\gamma),\bar{f}\defeq f(\gamma),\bar{Z}\defeq Z(\gamma),\bar{Z}_{g}\defeq Z(g\cdot \gamma)$
+ \item \prv sends the KZG opening proofs for the above values.
+ \item \ver verifies the KZG openings proofs for all values.
+ \item \ver computes $\bar{F}\defeq    L_1(\gamma)(Z(\gamma)-1) + \alpha(Z(g\cdot\gamma)-Z(\gamma)f(\gamma)))$
+ \item \ver accepts iff $\bar{F}=Z_H(\gamma)\bar{T}$.
+\end{enumerate}
+
+\begin{claim}
+ If $\prod_{i\in [n]}f_i =  \prod_{i\in [n]}f(g^i)\neq 1$ then \ver rejects e.w.p $(3n)/r$.
+\end{claim}
+\begin{proof}
+ Define the polynomial 
+ \[F(X)=L_1(X)(Z(X)-1)) + \alpha(Z(g\cdot X)-Z(X)f(X))\]
+ similar to the protocol of the previous lecture, the protocol is checking if $F$ vanishes on $H$ via a divisibility check.
+ Assume it does vanish on $H$.
+ Then e.w.p $1/r$ over $\alpha$ this implies both terms  $F_1=L_1(X)(Z(X)-1))$ and $F_2\defeq Z(g\cdot X)-Z(X)f(X)$ vanish on $H$.
+ 
+ \begin{itemize}
+  \item $F_1$ vanishing on $H$ implies $Z(g)=1$.
+  \item $F_2$ vanishing on $H$ implies that for each $i\in [n]$, $Z(g^{i+1})=f(g^i)Z(g^i)$. And so 
+  \[1=Z(g)= Z(g^{n+1})=\prod_{i\in [n]} f(g^i)\] 
+ as required.
+ \end{itemize}
+
+ 
+\end{proof}
+\subsection{Putting it all together}
+We sketch how the above components can be used to show $\sigma(v)=v$ assuming \ver has $\com{v}$:
+
+\ver chooses random $\beta,\gamma\in \F$.
+
+\prv uses the above grand product argument to show $\prod_{i\in [n]} f_i =1$.
+For the vector $f$ defined as
+\[f_i \defeq \frac{v_i + \beta \cdot i +\gamma}{v_i + \beta \cdot \sigma(i) +\gamma}\]
+
+To enable this we compute in a preprocessing phase the polynomials $ID,S$ that interpolate on $H$ the identity and $\sigma$ permutation.
+I.e. $ID(g^i)=i, S(g^i)=\sigma(i)$.
+For full details see Section 5 of the PlonK paper.
+
+
+
+
+
 
 
 \end{document}
