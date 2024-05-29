@@ -767,7 +767,7 @@ Suppose that $\prod_{i\in [n]} f_i =1$.  How can \prv prove this to \ver?
 \end{claim}
 \begin{proof}
  Define the polynomial 
- \[F(X)=L_1(X)(Z(X)-1)) + \alpha(Z(g\cdot X)-Z(X)f(X))\]
+ \[F(X)=L_1(X)(Z(X)-1) + \alpha(Z(g\cdot X)-Z(X)f(X))\]
  similar to the protocol of the previous lecture, the protocol is checking if $F$ vanishes on $H$ via a divisibility check.
  Assume it does vanish on $H$.
  Then e.w.p $1/r$ over $\alpha$ this implies both terms  $F_1=L_1(X)(Z(X)-1))$ and $F_2\defeq Z(g\cdot X)-Z(X)f(X)$ vanish on $H$.
@@ -798,8 +798,84 @@ For full details see Section 5 of the PlonK paper.
 
 
 
+\section{Lecture 4 - lookup arguments}
+Say we want to prove in a plonk program
+that $0\leq x \leq 2^{s-1}$.
+We could do it as follows:
+\prv sends the binary decomposition $x_0,\ldots,x_{s-1}$
+and proves that
+\begin{itemize}
+ \item Send $x_0,\ldots,x_{s-1}$ are binary, via equation $x_i(x_i-1)=0$.
+ \item $\sum_{i<s} x_i2^i =x$
+\end{itemize}
+This takes $s+1$ gates - in fact more like $2s$ since the addition has to be split up.
+Lookup arguments offer an alternative approach.
+For polynomials $f,t\in \polys$ let's write $f\subset t$ if as \emph{sets} $\sett{f(a)}{a\in H}\subset \sett{t(a)}{a\in H}$.
+A \emph{lookup protocol} allows proving this to \ver having \com{f},\com{t}.
+Say $s=\log n$, $|H|=n$. Say we want to check all of $f$'s vals are $0\leq f_i \leq 2^s-1$.
+In the above example, we could precompute \com{t} for $t$ with values \set{0,\ldots,2^t-1} on $H$ 
+and apply lookup protocol.
+
+\subsection{plookup - Lookup protocols via multiset checks}
+Fix $t,f\in \F^n$. Define the \emph{multi-set} 
+$A=\set{(f_i,f_i}_{i\in [n]}\cup \sett{(t_i,t_{i+1}}{i \in [n-1]}$
+
+\begin{claim}
+Assume (for simplicity mainly) $t$ contains distinct values and is sorted: $t_1<t_2\ldots<t_n$.
+ $f\ subset t$ if and only if there exists $s\in \F^{2n-1}$ such that 
+defining $S'=\set{(s_i,s_{i+1}}_{i\in [2n-1]}$, 
+we have $A=S$ as multisets.
+\end{claim}
+\begin{proof}
+\textbf{only if:}
+Define $s$ to be the \emph{sorted} version of the (mutli-set) union $f\cup t$.
+Then $A=S'$.
+\end{proof}
+
+
+\subsection{Lookups based on log-derivative}
+
+The main claim is :
+
+\begin{claim}
+Assume $r=|\F|$ is prime and larger than $n$.
+ $f\subset t$ if and only if there exists $m\in \F^n$ such that as rational functions
+ \[\sum_{i\in [n]}\frac{m_i}{X+t_i}=\sumi{n}\frac{1}{X+f_i}\]
+\end{claim}
+\begin{proof}
+ \textbf{only if:} Define $m_i$ to be the number of times $t_i$ appears in $f$.
+ \textbf{if(sketch):} The functions $1/(X+a)$ for different $a\in \F$ are linearly independent,
+ therefore the functions in the equation being equal implies every coefficient is equal.
+ So there can't be any $1/(X+a)$ on the RHS for $a\notin T$.
+\end{proof}
+
+
+\textbf{protocol idea:check identity on random $\beta$}
+\begin{enumerate}
+ \item \prv computes and send \com{m}
+ \item \ver chooses random $\beta\in \F$.
+ \item \prv sends \com{A} for polynomial $A$ with $A_i=\frac{m_i}{\beta+t_i}-\frac{1}{\beta+f_i}$
+ \item \ver checks that $A$ is well-formed and sums to zero on $H$.
+\end{enumerate}
+
+Checking that $A$ is well-formed - has the correct values, can be done by a quotient polynomial similar to others we've seen.
+
+\subsection{Proving a polynomial sums to zero:}
+We rely on the following claim from the Aurora paper:
+\begin{claim}
+ Given $f\in \polysofdeg{n}$,
+ $\sum_{a\in H} f(a) = (1/n)\cdot f(0)$.
+\end{claim}
+\begin{proof}
+ \[f(0)=\sumi{n}f_i L_i(0)\]
+ We have for all $i\in [n]$, $L_i(0)=1/n$.
+\end{proof}
+
+
+
 
 
 \end{document}
+
 
 
