@@ -812,7 +812,7 @@ Lookup arguments offer an alternative approach.
 For polynomials $f,t\in \polys$ let's write $f\subset t$ if as \emph{sets} $\sett{f(a)}{a\in H}\subset \sett{t(a)}{a\in H}$.
 A \emph{lookup protocol} allows proving this to \ver having \com{f},\com{t}.
 Say $s=\log n$, $|H|=n$. Say we want to check all of $f$'s vals are $0\leq f_i \leq 2^s-1$.
-In the above example, we could precompute \com{t} for $t$ with values \set{0,\ldots,2^t-1} on $H$ 
+In the above example, we could precompute \com{t} for $t$ with values \set{0,\ldots,2^s-1} on $H$ 
 and apply lookup protocol.
 
 \subsection{plookup - Lookup protocols via multiset checks}
