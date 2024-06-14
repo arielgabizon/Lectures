@@ -493,10 +493,10 @@ For $c\in \F$, we use the notation $\enc{c}\defeq c\cdot g$.
  \item The $\open(\cm,z,s;f)$ protocol  - proving $f(z)=s$ 
 \begin{enumerate}
  \item \prv computes 
- $h(X)\defeq \frac{f(X)-f(i)}{X-i}$\\
+ $h(X)\defeq \frac{f(X)-f(z)}{X-z}$\\
  \item \prv sends $\prf=[h(x)]$.
  \item \ver outputs \acc if and only if 
-\[e(\cm-\enc{z},\enc{1}) = e(\prf, \enc{x-i})\]
+\[e(\cm-\enc{s},\enc{1}) = e(\prf, \enc{x-z})\]
 \end{enumerate}
 \end{itemize}
 
@@ -677,7 +677,6 @@ We precompute the KZG commitments \com{A},\com{M} of $A,M$ and send them to \ver
 \end{enumerate}
 
 
-One can 
 
 \section{Lecture 3: the PlonK permutation argument (based on Bayer-Groth)}
 \subsection{Copy checks via permutations}
