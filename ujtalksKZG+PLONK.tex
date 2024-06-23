@@ -704,7 +704,7 @@ Here is a protocol for this.
 \begin{claim}
 Let $r=|\F|$.
  The check in equation \ref{eq:prod} holds with probability one if $f,g$ are mutliset equal,
- and probability at most $n$ if they are not.
+ and probability at most $n/r$ if they are not.
 \end{claim}
 \begin{proof}
 Define the polynomials 
@@ -817,7 +817,7 @@ and apply lookup protocol.
 
 \subsection{plookup - Lookup protocols via multiset checks}
 Fix $t,f\in \F^n$. Define the \emph{multi-set} 
-$A=\set{(f_i,f_i}_{i\in [n]}\cup \sett{(t_i,t_{i+1}}{i \in [n-1]}$
+$A=\set{(f_i,f_i)}_{i\in [n]}\cup \sett{(t_i,t_{i+1})}{i \in [n-1]}$
 
 \begin{claim}
 Assume (for simplicity mainly) $t$ contains distinct values and is sorted: $t_1<t_2\ldots<t_n$.
@@ -863,7 +863,7 @@ Checking that $A$ is well-formed - has the correct values, can be done by a quot
 We rely on the following claim from the Aurora paper:
 \begin{claim}
  Given $f\in \polysofdeg{n}$,
- $\sum_{a\in H} f(a) = (1/n)\cdot f(0)$.
+ $\sum_{a\in H} f(a) = n\cdot f(0)$.
 \end{claim}
 \begin{proof}
  \[f(0)=\sumi{n}f_i L_i(0)\]
