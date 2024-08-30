@@ -1,0 +1,299 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz,circuitikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{pgfplots}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+\usepackage[export]{adjustbox}
+\everymath{\color{purple}}
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\renewcommand{\P}{\ensuremath{{\mathbb P}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\bin}{\ensuremath{\set{0,1}}}
+\newcommand{\cube}{\ensuremath{\bin^n}}
+
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+% \newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\kzg}[1]{\cm(#1)}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+% \newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+% \newcommand{\caulk}{{\mathsf{Caulk}}}
+% \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{GFFT on the projective line}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon}\\                 % Enter your name between curly braces
+\tt{\footnotesize{Aztec Labs}                                       } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+% \begin{frame}
+% \large{plonk is a protocol to make short proofs about circuit satisfiability.}
+%  \begin{figure}
+%   \includegraphics[width=260pt]{circuit.png}
+% \end{figure}
+% \end{frame}
+\begin{frame}
+ \frametitle{FFT Reminder}
+ 
+ 
+ 
+ $S=\set{g,g^2,\ldots,g^{n}=1},n=2^k$\nl
+ Want to evaluate $f(X)\in \F[X]$ of deg $<n$ on $S$.\pause
+ Use recursive formula
+ \[f(X)=f_e(X^2)+X\cdot f_o(X^2)\]
+ 
+ Since the map $x\to x^2$ is 2-to-1 on $S$, this reduces $n$ evals of $f$ to $n/2$ evals of two deg $n/2$ polys.\nl
+
+ 
+ Requires $n|p-1$, where $p=|\F|$.
+ 
+ Can we do something when  $n|(p+1)$ instead?? 
+ % \begin{itemize}
+%  \item 
+% \end{itemize}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Reflection - why does FFT work?}
+ $S=\set{g,g^2,\ldots,g^{n}=1},n=2^k$\nl
+The map $\sigma(x)=g\cdot x$ goes over $S$ as a cycle.\nl
+\begin{itemize}
+\item Let $\tau = \sigma^{n/2}$. So $\tau(x)=-x$, and $\tau^2(x)=x$.
+\item The elements of $S$ split into disjoint pairs $(a,-a)$.\pause
+\item Define $N(X)=X \cdot \tau(X)=-X^2$. $N$ maps elements of a pair to the same output.\nl  
+\textit{Can we find a set of size $p+1$ with a similar cyclical $\sigma$?}
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+ \frametitle{The Projective line and fractional transformations}
+ 
+ How to get set $\P$ of size $2^k$?
+ Look at \emph{projective line} $\P\defeq \F\cup\infty$\nl
+ Take fractional map:
+ $\sigma(x)= \frac{1}{ax+b}$
+ 
+ Define: $\sigma(-b/a)=\infty,\sigma(\infty)=0$.\nl
+ 
+ \textbf{claim:}For the right choice of $a,b$ $\sigma$ makes a cycle over all of \P!
+ 
+ 
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{How do people formally represent the projective line?}
+ \textbf{Projective coordinates:}
+ Represent $a\in F$ by  $(c,d)$ with $a=c/d$ e.g. $(a,1)$.\nlnp
+ So $\infty=(1,0)$.\nl
+ 
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{How do people formally represent the projective line?}
+\textbf{As a circle in the plane:}\nlnp
+\begin{circuitikz}
+    % Draw the real line
+    \draw[thick] (-2,0) -- (2,0);
+    \node at (2.5,0) {};
+    
+    % Draw the larger circle a bit lower above the real line
+    \draw (0,1.5) node[circle,draw,minimum size=1.5cm] (circle) {};
+    \node at (0,1.5) {};
+\filldraw (circle.north) circle (2pt) node[above] {$\infty$};
+    % Draw a line from the top of the circle to somewhere on the real line
+    \draw (circle.north) -- (1,0);
+
+    % Add little black dots at the connection points
+    \filldraw (circle.north) circle (2pt);
+    \filldraw (1,0) circle (2pt);
+
+    % Connect the circle to the real line with a dashed line
+    \draw[dashed] (0,0) -- (circle);
+
+    % Calculate the intersection point of the line and the circle
+    \coordinate (intersection) at ($(circle) + (-41:0.75cm)$);
+    \filldraw (intersection) circle (2pt);
+\end{circuitikz}
+\vspace{0.3in}\nlnp
+\textit{See Circle STARK paper [HLP24] for this approach}
+\end{frame}
+% \begin{frame}
+%  \frametitle{How do people formally represent the projective line?}
+% \textbf{As places of the field $K=\F(X)$:}\nl
+% {\textcolor{green} {Dfn:}} A \emph{valuation ring} of $R\subset \F(X)$ is a subring such that
+% $\forall y\in K$ $y\in R$ or $1/y\in R$ (or both).\nl
+% \textit{\small{ Reminder:ring is set of elements closed under add/mult but maybe no divide}}\nl
+% 
+% \textit{Reminder: an ideal $I\subset R$ is closed under addition; and multiplication by \emph{any element of $R$}}
+% 
+% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R}$
+% 
+% 
+% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R$ at $a$ by taking $r\;\mod\; I$}\nl
+% 
+% 
+% Valuation rings in $K$, are also called ``places'' of $K$. 
+% 
+% 
+% \end{frame}
+\begin{frame}
+ \frametitle{How do people formally represent the projective line?}
+\textbf{As places of the field $K=\F(X)$:}\nl
+{\textcolor{green} {Dfn:}} A \emph{valuation ring} of $R\subset \F(X)$ is a subring such that
+$\forall y\in K$ $y\in R$ or $1/y\in R$ (or both).\nl
+% \textit{\small{ Reminder:ring is set of elements closed under add/mult but maybe no divide}}\nl
+
+\textbf{Example:}  Choose $a\in F$, take $R_a=\{f(X)/g(X)| f,g\in \F[X], g(a)\neq 0 \}$.\nl
+
+% \textit{Reminder: an ideal $I\subset R$ is closed under addition; and multiplication by \emph{any element of $R$}}
+
+% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R}$
+
+
+% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R$ at $a$ by taking $r\;\mod\; I$}\nl
+
+
+Valuation rings in $K$, are also called ``places'' of $K$. 
+
+
+\end{frame}
+% \begin{frame}
+% \frametitle{The places of $K=\F(X)$: }
+%   Choose $a\in F$. Write $r\in K$ as\\
+%   $r(X)=(X-a)^{v_a} \frac{f(X)}{g(X)}$, $f,g\in \F[X]; f(a),g(a)\neq 0$.\nl
+% 
+% $v$ is the \emph{valuation of $r$ at $a$}.
+% Take $R_a\defeq \{r\in K| v_a(r)\geq 0 \}$.\nl
+% $R_a$ is a place of $K$.
+% \end{frame}
+% \begin{frame}
+% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R_a}$\nl
+% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R_a$ at $a$ by taking $r\;\mod\; I_a$}\nl
+% This gives the same result as ``normal'' evaluation!
+%  
+% \end{frame}
+
+\begin{frame}
+ \frametitle{The infinity point in the algebraic representation}
+ There is \emph{one more} place of degree one in $K$:
+ $R_{\infty}=\set{f(X)/g(X)|deg(f)\leq deg(g)}$. \nl
+ $R_{\infty}=$ ``the set of functions that can be evaluated at infinity''
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Regular FFT via GFFT}
+\begin{enumerate}
+ \item Applying the map $\tau(x)=-x$.
+ \item Applying 2-1 map $x\to x^2$.\nl
+\end{enumerate}
+\emph{How do these operations look in the framework of places?} 
+\end{frame}
+\begin{frame}
+ \frametitle{Applying $\tau$}
+ \begin{enumerate}
+  \item Define $\tau$ as operation on $K$: $\tau(r(X)) \defeq  r(-X)$.\pause
+  \item Apply $\tau$ on  place $R_a$ element-wise: $\tau(R_a)\defeq \sett{\tau(r)}{ r\in R_a}$
+$  =\set{ \frac{f(-X)}{g(-X)}|g(a)\neq 0} = R_{-a}$
+ \end{enumerate}
+
+\end{frame}
+\begin{frame}
+ \frametitle{Galois subfields}
+%  \begin{enumerate}
+%   \item 
+Look at the \emph{subfield} of $K$ fixed by $\tau$ - $\set{r|\tau(r)=r}$. \nl
+This is exactly $\F(X^2)$.\\
+e.g. $\tau(X^2)=(-X)^2 = X^2$.
+
+%   \item Recursively evaluate relevant polys on places of subfield, and then expand into places of $K$ they split into. 
+%  \end{enumerate}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Places splitting in extensions}
+ Let $b=a^2$. Look at place $R'_b$ of $\F(X^2)$. \nl
+%  Take $b=a^2$.\nl    
+ For $r\in R'_b$ \nlnp
+ $r= f(X^2)/g(X^2)$ with $g(b)\neq 0$.\\
+ So $r(X)=f'(X)/g'(X)$ with $g'(a),g'(\scalebox{0.5}[1.0]{\( - \)}a)\neq 0$.\nl
+
+Implies $R'_b\subset R_a$ and $R'_b\subset R_{\minus a}$.\nl
+
+We say $R'_b$ \emph{splits} in $K$ into $R_a$ and $R_{\minus a}$.
+\end{frame}
+
+
+
+\begin{frame}
+
+ For more details see:
+ \begin{figure}
+  \includegraphics[width=260pt]{lx23.png}
+\end{figure}
+ 
+\end{frame}
+
+\end{document}
