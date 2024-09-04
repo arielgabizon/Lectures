@@ -116,44 +116,38 @@
  
 \end{frame}
 \begin{frame}
- \frametitle{Reflection - why does FFT work?}
- $S=\set{g,g^2,\ldots,g^{n}=1},n=2^k$\nl
+ \frametitle{GFFT idea: All you need is cyclic operation}
+ $S=\set{g,g^2,\ldots,g^{n}=1},n=2^k$\\ \pause
 The map $\sigma(x)=g\cdot x$ goes over $S$ as a cycle.\nl
 \begin{itemize}
-\item Let $\tau = \sigma^{n/2}$. So $\tau(x)=-x$, and $\tau^2(x)=x$.
-\item The elements of $S$ split into disjoint pairs $(a,-a)$.\pause
-\item Define $N(X)=X \cdot \tau(X)=-X^2$. $N$ maps elements of a pair to the same output.\nl  
-\textit{Can we find a set of size $p+1$ with a similar cyclical $\sigma$?}
+\item Let $\tau = \sigma^{n/2}$. So $\tau(x)=-x$, and $\tau^2(x)=x$.\pause
+\item $S$ splits into disjoint pairs $(a,\tau(a))$.\pause
+\item Let $N(X)\defeq X \cdot \tau(X)$.\\ \pause 2-1 on $S$: $N(a)=a \cdot \tau(a) = N(\tau(a))$.\nl %\\
+% $N$ is our 2-to-1 map.\nl
+
+\textit{Can we find a set of size $p+1$ with a cyclical $\sigma$?}
 \end{itemize}
 
 \end{frame}
 \begin{frame}
  \frametitle{The Projective line and fractional transformations}
  
- How to get set $\P$ of size $2^k$?
+%  How to get set $\P$ of size $2^k$?
  Look at \emph{projective line} $\P\defeq \F\cup\infty$\nl
  Take fractional map:
  $\sigma(x)= \frac{1}{ax+b}$
  
  Define: $\sigma(-b/a)=\infty,\sigma(\infty)=0$.\nl
  
- \textbf{claim:}For the right choice of $a,b$ $\sigma$ makes a cycle over all of \P!
+ \textbf{claim:}For the right choice of $a,b$, $\sigma$ makes a cycle over all of \P.
  
  
  
 \end{frame}
-\begin{frame}
- \frametitle{How do people formally represent the projective line?}
- \textbf{Projective coordinates:}
- Represent $a\in F$ by  $(c,d)$ with $a=c/d$ e.g. $(a,1)$.\nlnp
- So $\infty=(1,0)$.\nl
- 
-
-\end{frame}
 
 \begin{frame}
- \frametitle{How do people formally represent the projective line?}
-\textbf{As a circle in the plane:}\nlnp
+ \frametitle{Detour: The projective line as a circle in the plane}
+% \textbf{As a circle in the plane:}\nlnp
 \begin{circuitikz}
     % Draw the real line
     \draw[thick] (-2,0) -- (2,0);
@@ -180,46 +174,108 @@ The map $\sigma(x)=g\cdot x$ goes over $S$ as a cycle.\nl
 \vspace{0.3in}\nlnp
 \textit{See Circle STARK paper [HLP24] for this approach}
 \end{frame}
-% \begin{frame}
-%  \frametitle{How do people formally represent the projective line?}
-% \textbf{As places of the field $K=\F(X)$:}\nl
-% {\textcolor{green} {Dfn:}} A \emph{valuation ring} of $R\subset \F(X)$ is a subring such that
-% $\forall y\in K$ $y\in R$ or $1/y\in R$ (or both).\nl
-% \textit{\small{ Reminder:ring is set of elements closed under add/mult but maybe no divide}}\nl
-% 
-% \textit{Reminder: an ideal $I\subset R$ is closed under addition; and multiplication by \emph{any element of $R$}}
-% 
-% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R}$
-% 
-% 
-% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R$ at $a$ by taking $r\;\mod\; I$}\nl
-% 
-% 
-% Valuation rings in $K$, are also called ``places'' of $K$. 
-% 
-% 
-% \end{frame}
 \begin{frame}
- \frametitle{How do people formally represent the projective line?}
-\textbf{As places of the field $K=\F(X)$:}\nl
-{\textcolor{green} {Dfn:}} A \emph{valuation ring} of $R\subset \F(X)$ is a subring such that
-$\forall y\in K$ $y\in R$ or $1/y\in R$ (or both).\nl
-% \textit{\small{ Reminder:ring is set of elements closed under add/mult but maybe no divide}}\nl
-
-\textbf{Example:}  Choose $a\in F$, take $R_a=\{f(X)/g(X)| f,g\in \F[X], g(a)\neq 0 \}$.\nl
-
-% \textit{Reminder: an ideal $I\subset R$ is closed under addition; and multiplication by \emph{any element of $R$}}
-
-% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R}$
-
-
-% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R$ at $a$ by taking $r\;\mod\; I$}\nl
-
-
-Valuation rings in $K$, are also called ``places'' of $K$. 
-
-
+\textit{Let's try to proceed as before:}\\ 
+The map $\sigma(x)=\frac{1}{ax+b}$ goes over $\P$ as a cycle.\pause%\nl
+\begin{itemize}
+\item Let $\tau = \sigma^{n/2}$. %So $\tau(x)=-x$, and $\tau^2(x)=x$.\pause
+\item $\P$ splits into disjoint pairs $(a,\tau(a))$.\pause
+\item Let $N(X)\defeq X \cdot \tau(X)$.\\ \pause 2-1 on $\P$: $N(a)=?$\nl
+\textit{$\P$ is not a group, so $N(a)$ is not defined!}
+\end{itemize}
 \end{frame}
+\begin{frame}
+ \frametitle{The point $a$ as a ``place''}
+\textbf{Let $K=\F(X)$.}\nl
+
+Given $a\in \F$, let $P_a=\{r(X)\in K| r(a)=0 \}$.\nl
+$P_a$ is called a \emph{place}  of $K$.\nl
+\textit{($P_a$ is the unique maximal ideal of the subring of elements $r$ with $r(a)\neq \infty$.)}
+\end{frame}
+
+\begin{frame}
+\frametitle{Evaluating at $a$ with $P_a$}
+% \textbf{example:}
+Fix poly $f=\sum_{i=0}^n b_i X^i$.\\ \pause Write
+$f(X) = c + \sum_{i=1}^n c_i(X-a)^i$ .\nl
+Let $g\defeq \sum_{i=1}^n c_i(X-a)^i$.\nl
+
+So $f(a)=c$ and $g(X)\in P_a$.\nl
+
+I.e. - taking $f$ mod $P_a$ gives $f(a)$.
+\end{frame}
+
+\begin{frame}
+ \frametitle{The infinity point in the algebraic representation}
+ There is \emph{one more} place of degree one in $K$:
+ $P_{\infty}=\set{f(X)/g(X)|deg(f)< deg(g)}$. \nl
+ $P_{\infty}=$ ``the set of functions that are zero at infinity''
+ 
+\end{frame}
+\begin{frame}
+ \textit{To exemplify ideas focus from now on map $\tau(x)=\minus x$ from regular FFT.}
+\end{frame}
+
+\begin{frame}
+ Defining $\tau$ on places:\pause
+ \begin{enumerate}
+  \item Define $\tau$ as operation on $K$: $\tau(r(X)) \defeq  r(\minus X)$.\pause
+  \item Define $\tau$ on  place $P_a$ element-wise: $\tau(P_a)\defeq \sett{\tau(r)}{ r\in P_a}$\\ \pause
+$  =\set{ {r(\minus X)}| r(a)=0} = P_{\minus a}$
+ \end{enumerate}
+% 
+\end{frame}
+\begin{frame}
+ \frametitle{Galois subfields}
+%  \begin{enumerate}
+%   \item 
+Look at the \emph{subfield} of $K$ fixed by $\tau$ - $\set{r\in K|\tau(r)=r}$. \nl
+This is exactly $\F(X^2)$.\\
+e.g. $\tau(X^2)=(-X)^2 = X^2$.
+
+%   \item Recursively evaluate relevant polys on places of subfield, and then expand into places of $K$ they split into. 
+%  \end{enumerate}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Places ``splitting'' in extensions:}
+ Let $b=a^2$. Look at place $P'_b$ of $\F(X^2)$. \\ \pause
+ $P'_b=\set{r(X^2)|r(b)=0}$.\nl
+ 
+ Poly $f\in P'_b$ looks like:\\
+ $f=\sum_{i=1}^n c_i(X^2-b)^i$ \\ \pause 
+ $=\sum_{i=1}^n c_i(X+a)^i(X-a)^i$.\nl
+ 
+
+So $P'_b\subset P_a$ and $P'_b\subset P_{\minus a}$.\nl
+
+We say $P'_b$ \emph{splits} in $K$ into $P_a$ and $P_{\minus a}$.
+\end{frame}
+
+\begin{frame}
+\frametitle{Tying it together}
+\textit{Let's try to define $N$ again:}\\ 
+$\P \defeq \set{P_a}_{a\in \F} \cup P_{\infty}$.\\ \pause
+The map $\sigma(x)=\frac{1}{ax+b}$ goes over $\P$ as a cycle.
+\begin{itemize}
+\item Let $\tau = \sigma^{n/2}$. %So $\tau(x)=-x$, and $\tau^2(x)=x$.\pause
+\item $\P$ splits into disjoint pairs $(P,\tau(P))$.\pause
+\item  
+Let $K'$ be the subfield of $K$ fixed by $\tau$. Define $N(P)$ to be the place of $K'$ splitting in $K$ into $P,\tau(P)$.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+
+ For more details see:
+ \begin{figure}
+  \includegraphics[width=260pt]{lx23.png}
+\end{figure}
+ \textit{For more elementary approach with better final constants see Circle STARK[HLP24]}
+\end{frame}
+
+\end{document}
 % \begin{frame}
 % \frametitle{The places of $K=\F(X)$: }
 %   Choose $a\in F$. Write $r\in K$ as\\
@@ -235,65 +291,11 @@ Valuation rings in $K$, are also called ``places'' of $K$.
 % This gives the same result as ``normal'' evaluation!
 %  
 % \end{frame}
-
-\begin{frame}
- \frametitle{The infinity point in the algebraic representation}
- There is \emph{one more} place of degree one in $K$:
- $R_{\infty}=\set{f(X)/g(X)|deg(f)\leq deg(g)}$. \nl
- $R_{\infty}=$ ``the set of functions that can be evaluated at infinity''
- 
-\end{frame}
-\begin{frame}
- \frametitle{Regular FFT via GFFT}
-\begin{enumerate}
- \item Applying the map $\tau(x)=-x$.
- \item Applying 2-1 map $x\to x^2$.\nl
-\end{enumerate}
-\emph{How do these operations look in the framework of places?} 
-\end{frame}
-\begin{frame}
- \frametitle{Applying $\tau$}
- \begin{enumerate}
-  \item Define $\tau$ as operation on $K$: $\tau(r(X)) \defeq  r(-X)$.\pause
-  \item Apply $\tau$ on  place $R_a$ element-wise: $\tau(R_a)\defeq \sett{\tau(r)}{ r\in R_a}$
-$  =\set{ \frac{f(-X)}{g(-X)}|g(a)\neq 0} = R_{-a}$
- \end{enumerate}
-
-\end{frame}
-\begin{frame}
- \frametitle{Galois subfields}
-%  \begin{enumerate}
-%   \item 
-Look at the \emph{subfield} of $K$ fixed by $\tau$ - $\set{r|\tau(r)=r}$. \nl
-This is exactly $\F(X^2)$.\\
-e.g. $\tau(X^2)=(-X)^2 = X^2$.
-
-%   \item Recursively evaluate relevant polys on places of subfield, and then expand into places of $K$ they split into. 
-%  \end{enumerate}
- 
-\end{frame}
-\begin{frame}
- \frametitle{Places splitting in extensions}
- Let $b=a^2$. Look at place $R'_b$ of $\F(X^2)$. \nl
-%  Take $b=a^2$.\nl    
- For $r\in R'_b$ \nlnp
- $r= f(X^2)/g(X^2)$ with $g(b)\neq 0$.\\
- So $r(X)=f'(X)/g'(X)$ with $g'(a),g'(\scalebox{0.5}[1.0]{\( - \)}a)\neq 0$.\nl
-
-Implies $R'_b\subset R_a$ and $R'_b\subset R_{\minus a}$.\nl
-
-We say $R'_b$ \emph{splits} in $K$ into $R_a$ and $R_{\minus a}$.
-\end{frame}
-
-
-
-\begin{frame}
-
- For more details see:
- \begin{figure}
-  \includegraphics[width=260pt]{lx23.png}
-\end{figure}
- 
-\end{frame}
-
-\end{document}
+% \begin{frame}
+%  \frametitle{Regular FFT via GFFT}
+% \begin{enumerate}
+%  \item Applying the map $\tau(x)=-x$.
+%  \item Applying 2-1 map $x\to x^2$.\nl
+% \end{enumerate}
+% \emph{How do these operations look in the framework of places?} 
+% \end{frame}
