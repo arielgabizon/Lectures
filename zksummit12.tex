@@ -25,6 +25,7 @@
 \newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
 \newcommand{\adv}{\ensuremath{\mathcal A}}
 \newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\G}{\ensuremath{{\mathbb G}}}
 \renewcommand{\P}{\ensuremath{{\mathbb P}}}
 \newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
 \newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
@@ -48,6 +49,7 @@
  \newcommand{\hl}[1]{\textbf{\textit{#1}}}
  \newcommand{\polys}{\F[X]}
 \newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\rej}{{\mathbf{rej}}}
 \newcommand{\ideal}{\mathbf{I}}
 \newcommand{\gen}{\alpha}
 \newcommand{\spac}{\\  \vspace{0.2in} \noindent}
@@ -69,20 +71,22 @@
 \newcommand{\srs}{\ensuremath{\mathsf{srs}}}
 \newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
 \newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
-\newcommand{\zfin}{\ensuremath{z_{\mathscr{final}}}}
+\newcommand{\zfin}{\ensuremath{z_{\mathrm{final}}}}
 \newcommand{\rel}{\ensuremath{\mathcal{R}}}
 \newcommand{\vk}{\ensuremath{\mathrm{vk} }}
+\newcommand{\repr}{\ensuremath{\mathrm{repr} }}
 \newcommand{\numreads}{\ensuremath{\mathrm{numreads} }}
 \newcommand{\add}{\ensuremath{\mathrm{add} }}
 \newcommand{\adds}{\ensuremath{\mathrm{add}s }}
-\renewcommand{\count}{\ensuremath{\mathrm{count} }}
+\newcommand{\cnt}{\ensuremath{\mathrm{cnt} }}
 \newcommand{\addcount}{\ensuremath{\mathrm{acount} }}
 \renewcommand{\read}{\ensuremath{\mathrm{read} }}
+\newcommand{\reads}{\ensuremath{\mathrm{read}s }}
 \renewcommand{\note}{\ensuremath{\mathrm{note} }}
 \newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
 \newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
 \newcommand{\args}{\ensuremath{\mathrm{args} }}
-\newcommand{\stack}{\ensuremath{\mathrm{stack} }}
+\newcommand{\stack}{\ensuremath{\mathsf{stack} }}
 \newcommand{\argscur}{\ensuremath{\mathrm{args_{cur}} }}
 \newcommand{\argsnext}{\ensuremath{\mathrm{args_{next}} }}
 % \newcommand{\caulk}{{\mathsf{Caulk}}}
@@ -104,12 +108,6 @@
 \end{frame}
 
 
-% \begin{frame}
-% \large{plonk is a protocol to make short proofs about circuit satisfiability.}
-%  \begin{figure}
-%   \includegraphics[width=260pt]{circuit.png}
-% \end{figure}
-% \end{frame}
 \begin{frame}
  \frametitle{Outline}
  
@@ -117,53 +115,63 @@
   \item The Aztec Smart Contract system
   \item RCG
   \item Global state via log derivative
-  \item A theoretical interlude
+  \item A theoretical issue
  \end{itemize}
 \end{frame}
 \begin{frame}
  \frametitle{The Aztec Private Smart Contract System}
-A \emph{contract} has functions - represented by \emph{verification keys} .
+A \emph{contract} has functions - represented by \emph{verification keys} .\nlnp
 
-$A - \vk_A$\nl
-$B - \vk_B$
+$A - \vk_A$\\
+$B - \vk_B$\nl
 
 Function contracts can 
- - call other functions in same/other contract
+\begin{itemize}
+ \item call other functions in same/other contract
+ \end{itemize}
+ 
  \end{frame}
  
 \begin{frame}
-\frametitle{How do circuits  ``call each other''?}
-\emph{Example:} Want to prove execution of
-$A(\args_A)\{$
-..
-..
-$B(\args_B)$
-..
-..
-$\}$
+\frametitle{How do circuits  ``call each other''?}\pause
+\textbf{Example:} Want to prove execution of\nlnp
+$A(\args_A)\{$\\
+\;\;\;\;..\\
+\;\;\;\;..\\
+\;\;\;\;$B(\args_B);$\\
+\;\;\;\;..\\
+\;\;\;\;..\\
+$\}$\pause
 
 \textit{Idea: $A$'s public input will contain $\vk_B$ and $\args_B$}
 
 \end{frame}
 \begin{frame}
 \frametitle{How do circuits  ``call each other''?}
-\textit{Idea: $A$'s public input will contain $\vk_B$ and $\args_B$}
-$x_A=(\args_A,\vk_B,\args_B)$
-$x_B=(\args_B)$.
+% \textit{Idea: $A$'s public input will contain $\vk_B$ and $\args_B$}\\
+% $x_A=(\args_A,\vk_B,\args_B)$\\
+% $x_B=(\args_B)$\nl
 Construct proofs - 
-  $\pi_A$ for $A$ with public input $x_A=(\args_A,\vk_B,\args_B)$
-  $\pi_B$ for $B$ with public input $x_B=(\args_B)$
+\begin{itemize}
+\item$\pi_A$ for $A$ with public input $x_A=(\args_A,\vk_B,\args_B)$\pause
+\item$\pi_B$ for $B$ with public input $x_B=(\args_B)$\nl
+ \end{itemize}
   
-  verify $(x_A,\pi_A)$ with verification key $\vk_A$
-            $(x_B,\pi_B)$ with $\vk_B$
+  $\ver$ checks 
+  \begin{itemize}
+   \item 
+$(x_A,\pi_A)$ with $\vk_A$\\
+       \item     $(x_B,\pi_B)$ with $\vk_B$\nl
+  \end{itemize}
+  \emph{As $\ver$ enforces $\args_B,\vk_B$ used are \emph{the same} in both checks - corresponds to $A$ ``calling'' $B$. }
 \end{frame}
  
 \begin{frame}
- \frametitle{Viewing as IVC of a fixed function}
- $F(\vkcur,x=(\argscur,\vknext,\argsnext),\pi,\stack)$
+ \frametitle{Casting as IVC of a fixed function:}
+ $\underline{F(\vkcur,x=(\argscur,\vknext,\argsnext),\pi,\stack)}:$\pause
  \begin{enumerate}
-  \item Check $(\vkcur,\argscur)$ is top element in \stack and pop it off.
-  \item Check that $\ver(\vkcur,x,\pi)=\acc$.
+  \item Check $(\vkcur,\argscur)$ is top element in $\stack$ and pop it off.\pause
+  \item Check that $\ver(\vkcur,x,\pi)=\acc$.\pause
   \item Push $(\vknext,\argsnext)$ to top of \stack.
  \end{enumerate}
 
@@ -171,32 +179,32 @@ Construct proofs -
  
 \begin{frame}
  \frametitle{ But we forgot global state }
-A \emph{contract} has functions - represented by \emph{verification keys} .
+A \emph{contract} has functions - represented by \emph{verification keys} .\nlnp
 
-$A - \vk_A$\nl
-$B - \vk_B$
-{\textcolor{red}{A contract has \emph{notes} representing its state.}}
-$\note_1$
-$\note_2$
-$\note_3$
- Contract functions can 
- \begin{itemize}
-  \item Call other functions in same/other contract
+$A - \vk_A$\\
+$B - \vk_B$\nl
+
+{\textcolor{red}{and \emph{notes} representing its state:}}\\
+$\note_1$\\
+$\note_2$\nl
+Function contracts can 
+\begin{itemize}
+ \item call other functions in same/other contract
  \item \textcolor{red}{add/read/delete contract notes}
  \end{itemize}
  \end{frame}
-% \begin{frame}
-%  \frametitle{Global State}
-%  We add to the function public inputs the  note operations (with time stamps)
-%  
-%  $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
-%  $x_B=(\vk_B,\args_B,[\add,\note,3])$
-%  
-%  \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see \note created (with earlier timestamp)\pause
-%  
-%  
-%  ``Order of proving is different than order of execution``
-% \end{frame}
+\begin{frame}
+ \frametitle{Global State}
+ We add to the function public inputs the  note operations (with time stamps)
+ 
+ $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
+ $x_B=(\vk_B,\args_B,[\add,\note,3])$
+ 
+ \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see \note created (with earlier timestamp)\pause
+ 
+ 
+ ``Order of proving is different than order of execution``
+\end{frame}
 \begin{frame}
  \frametitle{RCG - Repeated Computation with Global state}
  Like IVC...but
@@ -214,36 +222,36 @@ $\note_3$
   \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
  \end{itemize}
 \end{frame}
-% \begin{frame}
-%  \frametitle{RCG - Simplfied dfn}
-% \noindent
-% \emph{Transition predicate:} $F(Z,W,Z^*,S)\to \set{\acc,\rej}$. 
-% \emph{Final predicate} $f(S_1,\ldots,S_n)\to \set{\acc,\rej}$.
-% 
-% The RCG relation $\rel=\rel_{F,f}$ consists of pairs $(X,W)$ such that
-% $X=(\zfin,n),W=(z=(z_0,\ldots,z_n),w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that
-% \begin{itemize}
-%  \item $z_n=\zfin$.
-%  \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.
-%  \item $f(s_1,\ldots,s_n)=\acc$.
-% \end{itemize}
-% 
-% 
-% We say a zk-SNARK for \rel is \emph{space-efficient} if given $s$ and streaming access
-% to $z$ and $w$ $P$ requires space $\~$ $O(|F|+|s|)$.
-% \end{frame}
+\begin{frame}
+ \frametitle{RCG - Simplfied dfn}
+\noindent
+\emph{Transition predicate:} $F(Z,W,Z^*,S)\to \{\acc,\rej\}$. 
+\emph{Final predicate:} $f(S_1,\ldots,S_n)\to \set{\acc,\rej}$.
+
+The RCG relation $\rel=\rel_{F,f}$ consists of pairs $(X,W)$ such that
+$X=(\zfin,n),W=(z=(z_0,\ldots,z_n),w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that
+\begin{itemize}
+ \item $z_n=\zfin$.
+ \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.
+ \item $f(s_1,\ldots,s_n)=\acc$.
+\end{itemize}
+
+
+We say a zk-SNARK for \rel is \emph{space-efficient} if given $s$ and streaming access
+to $z$ and $w$ $P$ requires space $\sim$ $O(|F|+|s|)$.
+\end{frame}
 \begin{frame}
 \frametitle{ D\'ej\`a vu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck}22]}.
 In $\add$ ops also write the number of times note is read
 e.g. $a=(\add,\note,\numreads)$
 In $\read$ ops write the timestamp of note addition.
-e.g. $r=(\read,\note,\addcount,\count)$.
+e.g. $r=(\read,\note,\addcount,\cnt)$.
 
 \begin{itemize}
- \item For each read $r$ we check that $\addcount<\count$.
+ \item For each read $r$ we check that $\addcount<\cnt$.
  \item Prover hashes note operations from all function calls to get challenge $\beta\in \F$.
  \item Final proof will check that
- \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}{\frac{\numreads}{\note+\beta \cdot \count} \]
+ \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}\frac{\numreads}{\note+\beta \cdot \cnt} \]
 \end{itemize}
 
 \end{frame}
@@ -260,36 +268,12 @@ e.g. $r=(\read,\note,\addcount,\count)$.
  $b=\sum_{i=1}^n c'_i v_i$.
 \end{frame}
 
-% \begin{frame}
-% 
-%  For more details see:
-%  \begin{figure}
-%   \includegraphics[width=260pt]{lx23.png}
-% \end{figure}
-%  \textit{For more elementary approach with better final constants see Circle STARK[HLP24]}
-% \end{frame}
+\begin{frame}
+
+ For more details see:
+ \begin{figure}
+  \includegraphics[width=260pt]{stackproofs.png}
+\end{figure}
+\end{frame}
 % 
 \end{document}
-% \begin{frame}
-% \frametitle{The places of $K=\F(X)$: }
-%   Choose $a\in F$. Write $r\in K$ as\\
-%   $r(X)=(X-a)^{v_a} \frac{f(X)}{g(X)}$, $f,g\in \F[X]; f(a),g(a)\neq 0$.\nl
-% 
-% $v$ is the \emph{valuation of $r$ at $a$}.
-% Take $R_a\defeq \{r\in K| v_a(r)\geq 0 \}$.\nl
-% $R_a$ is a place of $K$.
-% \end{frame}
-% \begin{frame}
-% The unique maximal ideal of $R_a$ is $I_a=\set{(X-a)\cdot r|r\in R_a}$\nl
-% \textit{Cool thing: $R_a/I_a=\F$. And we can evaluate $r\in R_a$ at $a$ by taking $r\;\mod\; I_a$}\nl
-% This gives the same result as ``normal'' evaluation!
-%  
-% \end{frame}
-% \begin{frame}
-%  \frametitle{Regular FFT via GFFT}
-% \begin{enumerate}
-%  \item Applying the map $\tau(x)=-x$.
-%  \item Applying 2-1 map $x\to x^2$.\nl
-% \end{enumerate}
-% \emph{How do these operations look in the framework of places?} 
-% \end{frame}
