@@ -3,7 +3,7 @@
 \usepackage{tikz,circuitikz}
 \usetikzlibrary{shapes, positioning}
 \usenavigationsymbolstemplate{}
-\usepackage{pgfplots}
+\usepackage{xcolor,pgfplots}
 \usepackage[absolute,overlay]{textpos}
 \usepackage{amsthm,amsfonts}
 %\usepackage[T1]{fontenc}
@@ -69,6 +69,22 @@
 \newcommand{\srs}{\ensuremath{\mathsf{srs}}}
 \newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
 \newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\zfin}{\ensuremath{z_{\mathscr{final}}}}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}}
+\newcommand{\vk}{\ensuremath{\mathrm{vk} }}
+\newcommand{\numreads}{\ensuremath{\mathrm{numreads} }}
+\newcommand{\add}{\ensuremath{\mathrm{add} }}
+\newcommand{\adds}{\ensuremath{\mathrm{add}s }}
+\renewcommand{\count}{\ensuremath{\mathrm{count} }}
+\newcommand{\addcount}{\ensuremath{\mathrm{acount} }}
+\renewcommand{\read}{\ensuremath{\mathrm{read} }}
+\renewcommand{\note}{\ensuremath{\mathrm{note} }}
+\newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
+\newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
+\newcommand{\args}{\ensuremath{\mathrm{args} }}
+\newcommand{\stack}{\ensuremath{\mathrm{stack} }}
+\newcommand{\argscur}{\ensuremath{\mathrm{args_{cur}} }}
+\newcommand{\argsnext}{\ensuremath{\mathrm{args_{next}} }}
 % \newcommand{\caulk}{{\mathsf{Caulk}}}
 % \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
 \newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
@@ -118,20 +134,20 @@ Function contracts can
 \begin{frame}
 \frametitle{How do circuits  ``call each other''?}
 \emph{Example:} Want to prove execution of
-$A(args_A){$
+$A(\args_A)\{$
 ..
 ..
-$B(args_B)$
+$B(\args_B)$
 ..
 ..
-$}$
+$\}$
 
-\textit{Idea: $A$'s public input will contain $vk_B$ and $args_B$}
+\textit{Idea: $A$'s public input will contain $\vk_B$ and $\args_B$}
 
 \end{frame}
 \begin{frame}
 \frametitle{How do circuits  ``call each other''?}
-\textit{Idea: $A$'s public input will contain $vk_B$ and $args_B$}
+\textit{Idea: $A$'s public input will contain $\vk_B$ and $\args_B$}
 $x_A=(\args_A,\vk_B,\args_B)$
 $x_B=(\args_B)$.
 Construct proofs - 
@@ -147,7 +163,7 @@ Construct proofs -
  $F(\vkcur,x=(\argscur,\vknext,\argsnext),\pi,\stack)$
  \begin{enumerate}
   \item Check $(\vkcur,\argscur)$ is top element in \stack and pop it off.
-  \item Check that $\ver(\vkcurr,x,\pi)=\acc$.
+  \item Check that $\ver(\vkcur,x,\pi)=\acc$.
   \item Push $(\vknext,\argsnext)$ to top of \stack.
  \end{enumerate}
 
@@ -159,28 +175,36 @@ A \emph{contract} has functions - represented by \emph{verification keys} .
 
 $A - \vk_A$\nl
 $B - \vk_B$
-\red{A contract has \emph{notes} representing its state.
+{\textcolor{red}{A contract has \emph{notes} representing its state.}}
 $\note_1$
 $\note_2$
 $\note_3$
  Contract functions can 
  \begin{itemize}
-  \item 
- call other functions in same/other contract
- \item \red{add/read/delete} contract notes
+  \item Call other functions in same/other contract
+ \item \textcolor{red}{add/read/delete contract notes}
  \end{itemize}
  \end{frame}
+% \begin{frame}
+%  \frametitle{Global State}
+%  We add to the function public inputs the  note operations (with time stamps)
+%  
+%  $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
+%  $x_B=(\vk_B,\args_B,[\add,\note,3])$
+%  
+%  \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see \note created (with earlier timestamp)\pause
+%  
+%  
+%  ``Order of proving is different than order of execution``
+% \end{frame}
 \begin{frame}
- \frametitle{Global State}
- We add to the function public inputs the  note operations (with time stamps)
- 
- $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
- $x_B=(\vk_B,\args_B,[\add,\note,3])$
- 
- \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see \note created (with earlier timestamp)\pause
- 
- 
- ``Order of proving is different than order of execution``
+ \frametitle{RCG - Repeated Computation with Global state}
+ Like IVC...but
+ \begin{itemize}
+  \item Computation ends before proving starts.
+  \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
+ \end{itemize}
+
 \end{frame}
 \begin{frame}
  \frametitle{RCG - Repeated Computation with Global state}
@@ -189,36 +213,27 @@ $\note_3$
   \item Computation ends before proving starts.
   \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
  \end{itemize}
-
 \end{frame}
+% \begin{frame}
+%  \frametitle{RCG - Simplfied dfn}
+% \noindent
+% \emph{Transition predicate:} $F(Z,W,Z^*,S)\to \set{\acc,\rej}$. 
+% \emph{Final predicate} $f(S_1,\ldots,S_n)\to \set{\acc,\rej}$.
+% 
+% The RCG relation $\rel=\rel_{F,f}$ consists of pairs $(X,W)$ such that
+% $X=(\zfin,n),W=(z=(z_0,\ldots,z_n),w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that
+% \begin{itemize}
+%  \item $z_n=\zfin$.
+%  \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.
+%  \item $f(s_1,\ldots,s_n)=\acc$.
+% \end{itemize}
+% 
+% 
+% We say a zk-SNARK for \rel is \emph{space-efficient} if given $s$ and streaming access
+% to $z$ and $w$ $P$ requires space $\~$ $O(|F|+|s|)$.
+% \end{frame}
 \begin{frame}
- \frametitle{RCG - Repeated Computation with Global state}
- Like IVC...but
- \begin{itemize}
-  \item Computation ends before proving starts.
-  \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
- \end{itemize}
-\end{frame}
-\begin{frame}
- \frametitle{RCG - Simplfied dfn}
-\noindent
-\emph{Transition predicate:} $F(Z,W,Z^*,S)\to \set{\acc,\rej}$. 
-\emph{Final predicate} $\finpred(S_1,\ldots,S_n)\to \set{\acc,\rej}$.
-
-The RCG relation $\rel=\rel_{F,\finpred}$ consists of pairs $(\inpF,\witF)$ such that
-$\inpF=(\zfin,n),\witF=(z=(z_0,\ldots,z_n),w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that
-\begin{itemize}
- \item $z_n=\zfin$.
- \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.
- \item $\finpred(s_1,\ldots,s_n)=\acc$.
-\end{itemize}
-
-
-We say a \zksnark for \rel is \emph{space-efficient} if given $s$ and streaming access
-to $z$ and $w$ \prv requires space $\~$ $O(|F|+|s|)$.
-\end{frame}
-\begin{frame}
-\frametitle{dejavu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck}22]}.
+\frametitle{ D\'ej\`a vu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck}22]}.
 In $\add$ ops also write the number of times note is read
 e.g. $a=(\add,\note,\numreads)$
 In $\read$ ops write the timestamp of note addition.
@@ -228,8 +243,7 @@ e.g. $r=(\read,\note,\addcount,\count)$.
  \item For each read $r$ we check that $\addcount<\count$.
  \item Prover hashes note operations from all function calls to get challenge $\beta\in \F$.
  \item Final proof will check that
- \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}{\frac{\numreads}{\note+\beta \cdot \count}
- \]
+ \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}{\frac{\numreads}{\note+\beta \cdot \count} \]
 \end{itemize}
 
 \end{frame}
