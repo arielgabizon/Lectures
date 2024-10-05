@@ -14,6 +14,7 @@
 \usepackage{eulervm}
 \usepackage[export]{adjustbox}
 \everymath{\color{purple}}
+\definecolor{darkred}{rgb}{0.75, 0, 0.25} 
 % Class options include: notes, notesonly, handout, trans,
 %                        hidesubsections, shadesubsections,
 %                        inrow, blue, red, grey, brown
@@ -77,11 +78,11 @@
 \newcommand{\repr}{\ensuremath{\mathrm{repr} }}
 \newcommand{\numreads}{\ensuremath{\mathbf{numreads} }}
 \newcommand{\add}{\ensuremath{\mathbf{add} }}
-\newcommand{\adds}{\ensuremath{\mathbf{add}s }}
-\newcommand{\cnt}{\ensuremath{\mathbf{cnt} }}
-\newcommand{\addcount}{\ensuremath{\mathrm{acount} }}
+\newcommand{\adds}{\ensuremath{\mathbf{adds} }}
+\newcommand{\cnt}{\ensuremath{\mathpgoth{t} }}
+\newcommand{\addcount}{\ensuremath{\mathpgoth{at} }}
 \renewcommand{\read}{\ensuremath{\mathbf{read} }}
-\newcommand{\reads}{\ensuremath{\mathbf{read}s }}
+\newcommand{\reads}{\ensuremath{\mathbf{reads} }}
 \renewcommand{\note}{\ensuremath{\mathfrak{n} }}
 \newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
 \newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
@@ -178,11 +179,11 @@ $(x_A,\pi_A)$ with $\vk_A$\\
 \end{frame}
  
 \begin{frame}
- \frametitle{ But we forgot global state }
+ \frametitle{ But we forgot global state! }
 A \emph{contract} has functions - represented by \emph{verification keys} .\nlnp
 
 $A - \vk_A$\\
-$B - \vk_B$\nl
+$B - \vk_B$\nlnp
 
 {\textcolor{red}{and \emph{notes} representing its state:}}\\
 $\note_1$\\
@@ -195,15 +196,15 @@ Function contracts can
  \end{frame}
 \begin{frame}
  \frametitle{Global State}
- We add to the function public inputs the  note operations (with time stamps)
+ We add the  note operations \emph{with time stamps} to the public inputs:
  \begin{itemize}
 \item $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
 \item $x_B=(\vk_B,\args_B,[\add,\note,3])$\nl
 \end{itemize} 
- \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see $\note$ created (with earlier timestamp)\nl
+ \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see $\note$ created with earlier timestamp.\nl
  
  
- {\fontfamily{garamond}\selectfont ``Order of proving is different than order of execution``}
+ {\fontfamily{garamond}\selectfont ``Order of proving is different than order of execution''}
 \end{frame}
 \begin{frame}
  \frametitle{RCG - Repeated Computation with Global state}
@@ -219,7 +220,7 @@ Function contracts can
 \noindent
 \begin{itemize}
 \item \emph{Transition predicate:} $F\to \{\acc,\rej\}$. 
-\item \emph{Final predicate:} $f\to \set{\acc,\rej}$.\\
+\item \emph{Final predicate:} $f\to \set{\acc,\rej}$.\pause
 \end{itemize}
 The RCG relation $\rel_{F,f}$ consists of pairs $(X,W)$ 
 $X=(\zfin,n),W=(z=(z_0,\ldots,z_n),$ $w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that\pause
@@ -234,22 +235,22 @@ We say a zk-SNARK for $\rel_{F,f}$ is \emph{space-efficient} if $\prv$ requires 
 \end{frame}
 \begin{frame}
 \frametitle{ D\'ej\`a vu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck22]}}
-In $\add$ ops write the number of times note is read
-e.g. $a=(\add,\note,\numreads)$\nl
-In $\read$ ops add the timestamp of note addition.
-e.g. $r=(\read,\note,\addcount,\cnt)$.\nl
+In $\add$ op, add the number of times $\note$ is read
+ $a=(\add,\note,\cnt,\numreads)$\nl
+In $\read$ op, add the timestamp $\addcount$ of $\note$'s addition.
+ $r=(\read,\note,\addcount,\cnt)$.\nl
 
 \begin{itemize}
  \item For each read $r$ we check that $\addcount<\cnt$.\pause
  \item Prover hashes note operations from all function calls to get challenge $\beta\in \F$.\pause
- \item Final proof will check that
- \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}\frac{\numreads}{\note+\beta \cdot \cnt} \]
+ \item Final predicate will check that
+ \[\textcolor{darkred}{\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}\frac{\numreads}{\note+\beta \cdot \cnt}} \]
 \end{itemize}
 
 \end{frame}
 \begin{frame}
  \frametitle{Theoretical interlude - The recursive Algebraic Model {\small [LS23]}}
- AGM[FKL] - Given SRS $v\in \G^n$,
+ AGM{\small [FKL]} - Given SRS $v\in \G^n$,
  when $\adv$ outputs $a\in \G$ it must output
  $c\in \F^n$ such that $a=\sum_{i=1}^n c_i v_i$.\nl
  
