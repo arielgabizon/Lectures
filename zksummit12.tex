@@ -75,14 +75,14 @@
 \newcommand{\rel}{\ensuremath{\mathcal{R}}}
 \newcommand{\vk}{\ensuremath{\mathrm{vk} }}
 \newcommand{\repr}{\ensuremath{\mathrm{repr} }}
-\newcommand{\numreads}{\ensuremath{\mathrm{numreads} }}
-\newcommand{\add}{\ensuremath{\mathrm{add} }}
-\newcommand{\adds}{\ensuremath{\mathrm{add}s }}
-\newcommand{\cnt}{\ensuremath{\mathrm{cnt} }}
+\newcommand{\numreads}{\ensuremath{\mathbf{numreads} }}
+\newcommand{\add}{\ensuremath{\mathbf{add} }}
+\newcommand{\adds}{\ensuremath{\mathbf{add}s }}
+\newcommand{\cnt}{\ensuremath{\mathbf{cnt} }}
 \newcommand{\addcount}{\ensuremath{\mathrm{acount} }}
-\renewcommand{\read}{\ensuremath{\mathrm{read} }}
-\newcommand{\reads}{\ensuremath{\mathrm{read}s }}
-\renewcommand{\note}{\ensuremath{\mathrm{note} }}
+\renewcommand{\read}{\ensuremath{\mathbf{read} }}
+\newcommand{\reads}{\ensuremath{\mathbf{read}s }}
+\renewcommand{\note}{\ensuremath{\mathfrak{n} }}
 \newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
 \newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
 \newcommand{\args}{\ensuremath{\mathrm{args} }}
@@ -196,76 +196,68 @@ Function contracts can
 \begin{frame}
  \frametitle{Global State}
  We add to the function public inputs the  note operations (with time stamps)
+ \begin{itemize}
+\item $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
+\item $x_B=(\vk_B,\args_B,[\add,\note,3])$\nl
+\end{itemize} 
+ \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see $\note$ created (with earlier timestamp)\nl
  
- $x_A=(\args_A,\vk_B,\args_B,[\read,\note,8])$
- $x_B=(\vk_B,\args_B,[\add,\note,3])$
  
- \emph{Problem:} When verifying proof for $A$ we don't know whether in a future IVC iteration we'll see \note created (with earlier timestamp)\pause
- 
- 
- ``Order of proving is different than order of execution``
+ {\fontfamily{garamond}\selectfont ``Order of proving is different than order of execution``}
 \end{frame}
 \begin{frame}
  \frametitle{RCG - Repeated Computation with Global state}
- Like IVC...but
+ Like IVC...but\pause
  \begin{itemize}
-  \item Computation ends before proving starts.
-  \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
+  \item Computation ends before proving starts.\pause
+  \item Prover memory allowed to depend on size of global state in addition to memory for one iteration.
  \end{itemize}
 
 \end{frame}
 \begin{frame}
- \frametitle{RCG - Repeated Computation with Global state}
- Like IVC...but
- \begin{itemize}
-  \item Computation ends before proving starts.
-  \item Prover memory allowed to depend on size of global state in addition to memory for one iteration
- \end{itemize}
-\end{frame}
-\begin{frame}
- \frametitle{RCG - Simplfied dfn}
+ \frametitle{RCG - Simplified dfn}\pause
 \noindent
-\emph{Transition predicate:} $F(Z,W,Z^*,S)\to \{\acc,\rej\}$. 
-\emph{Final predicate:} $f(S_1,\ldots,S_n)\to \set{\acc,\rej}$.
-
-The RCG relation $\rel=\rel_{F,f}$ consists of pairs $(X,W)$ such that
-$X=(\zfin,n),W=(z=(z_0,\ldots,z_n),w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that
 \begin{itemize}
- \item $z_n=\zfin$.
- \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.
- \item $f(s_1,\ldots,s_n)=\acc$.
+\item \emph{Transition predicate:} $F\to \{\acc,\rej\}$. 
+\item \emph{Final predicate:} $f\to \set{\acc,\rej}$.\\
+\end{itemize}
+The RCG relation $\rel_{F,f}$ consists of pairs $(X,W)$ 
+$X=(\zfin,n),W=(z=(z_0,\ldots,z_n),$ $w=(w_1\ldots,w_n),s=(s_1,\ldots,s_n))$ such that\pause
+\begin{itemize}
+ \item $z_n=\zfin$.\pause
+ \item For each $i\in [n]$, $F(z_{i-1},w_i,z_i,s_i)=\acc$.\pause
+ \item $f(s_1,\ldots,s_n)=\acc$.\pause
 \end{itemize}
 
 
-We say a zk-SNARK for \rel is \emph{space-efficient} if given $s$ and streaming access
-to $z$ and $w$ $P$ requires space $\sim$ $O(|F|+|s|)$.
+We say a zk-SNARK for $\rel_{F,f}$ is \emph{space-efficient} if $\prv$ requires space $\sim$ $O(|F|+|s|)$.
 \end{frame}
 \begin{frame}
-\frametitle{ D\'ej\`a vu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck}22]}.
-In $\add$ ops also write the number of times note is read
-e.g. $a=(\add,\note,\numreads)$
-In $\read$ ops write the timestamp of note addition.
-e.g. $r=(\read,\note,\addcount,\cnt)$.
+\frametitle{ D\'ej\`a vu from previous talk: Memory checks with log-derivative {\small [Eagen22, Hab{\"{o}}ck22]}}
+In $\add$ ops write the number of times note is read
+e.g. $a=(\add,\note,\numreads)$\nl
+In $\read$ ops add the timestamp of note addition.
+e.g. $r=(\read,\note,\addcount,\cnt)$.\nl
 
 \begin{itemize}
- \item For each read $r$ we check that $\addcount<\cnt$.
- \item Prover hashes note operations from all function calls to get challenge $\beta\in \F$.
+ \item For each read $r$ we check that $\addcount<\cnt$.\pause
+ \item Prover hashes note operations from all function calls to get challenge $\beta\in \F$.\pause
  \item Final proof will check that
  \[\sum_{r\in \reads} \frac{1}{\note + \beta \cdot \addcount} = \sum _{a\in \adds}\frac{\numreads}{\note+\beta \cdot \cnt} \]
 \end{itemize}
 
 \end{frame}
 \begin{frame}
- \frametitle{Theoretical interlude - The recursive Algebraic Model [LS23]}
+ \frametitle{Theoretical interlude - The recursive Algebraic Model {\small [LS23]}}
  AGM[FKL] - Given SRS $v\in \G^n$,
  when $\adv$ outputs $a\in \G$ it must output
- $c\in \F^n$ such that $a=\sum_{i=1}^n c_i v_i$.
+ $c\in \F^n$ such that $a=\sum_{i=1}^n c_i v_i$.\nl
  
- Fix in advance representation function for $\G$
- $\repr:\G\to \F^2$.
- What if for some $i<n$, $(c_i,c_{i+1}) = \repr(b)$ for some $b\in \G$?
- Then a \emph{recursive Algebraic adversary} must output $c'\in \F^n$ with
- $b=\sum_{i=1}^n c'_i v_i$.
+ Fix in advance $\repr:\G\to \F^2$.\nl 
+ What if for some $i<n$, $(c_i,c_{i+1}) = \repr(b)$ for some $b\in \G$?\\ \pause
+ Then a \emph{recursive algebraic adversary} must also output $c'\in \F^n$ with
+ $b=\sum_{i=1}^n c'_i v_i$.\nl
+ \textbf{Is this legit?}
 \end{frame}
 
 \begin{frame}
