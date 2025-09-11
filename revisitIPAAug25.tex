@@ -1,0 +1,176 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz,circuitikz}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{xcolor,pgfplots,bm}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+\usepackage[export]{adjustbox}
+\everymath{\color{purple}}
+\definecolor{darkred}{rgb}{0.75, 0, 0.25} 
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\G}{\ensuremath{{\mathbb G}}}
+\renewcommand{\P}{\ensuremath{{\mathbb P}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\bin}[1]{\ensuremath{\set{0,1}^{#1}}}
+\newcommand{\cube}{\ensuremath{\bin^n}}
+
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+% \newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\kzg}[1]{\cm(#1)}
+\newcommand{\open}[1]{\ensuremath{\mathsf{open}(#1)}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\rej}{{\mathbf{rej}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+% \newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\zfin}{\ensuremath{z_{\mathrm{final}}}}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}}
+\newcommand{\vk}{\ensuremath{\mathrm{vk} }}
+\newcommand{\repr}{\ensuremath{\mathrm{repr} }}
+\newcommand{\numreads}{\ensuremath{\mathbf{numreads} }}
+\newcommand{\add}{\ensuremath{\mathbf{add} }}
+\newcommand{\adds}{\ensuremath{\mathbf{adds} }}
+\newcommand{\cnt}{\ensuremath{\mathpgoth{t} }}
+\newcommand{\addcount}{\ensuremath{\mathpgoth{at} }}
+\renewcommand{\read}{\ensuremath{\mathbf{read} }}
+\newcommand{\reads}{\ensuremath{\mathbf{reads} }}
+\renewcommand{\note}{\ensuremath{\mathfrak{n} }}
+\newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
+\newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
+\newcommand{\args}{\ensuremath{\mathrm{args} }}
+\newcommand{\stack}{\ensuremath{\mathsf{stack} }}
+\newcommand{\argscur}{\ensuremath{\mathrm{args_{cur}} }}
+\newcommand{\argsnext}{\ensuremath{\mathrm{args_{next}} }}
+% \newcommand{\caulk}{{\mathsf{Caulk}}}
+% \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+\newcommand{\mle}[1]{\ensuremath{\hat{#1}}}
+\newcommand{\eq}{\ensuremath{\mathbf{eq}}}
+\newcommand{\sumi}[1]{\sum_{i< #1}}
+\newcommand{\com}{\ensuremath{\mathsf{com}}}
+\newcommand{\X}{\ensuremath{\mathbf{X}}}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{IPA as sumcheck}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon (based on work with Liam Eagen)}\\                 % Enter your name between curly braces
+\tt{\footnotesize{Aztec Labs}                                       } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Main Goal:}
+ 
+ \begin{itemize}
+  \item Reduce linear verifier time from IPA
+
+ \end{itemize}
+\end{frame}
+\begin{frame}
+ \frametitle{Polynomials over \G}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{Multilinears and vectors}
+
+$n=2^k$.\nlnp
+$f=(f_0,\ldots,f_{n-1})\in \F^n,z\in \F^k$
+\[\mle{f}(z)\defeq \sum_{i<n} \eq(i,z) f_i\]\pause
+(can do same for $G\in \G^n$)
+ \end{frame}
+\begin{frame}
+ \frametitle{MLPCS based on IPA:}
+\textbf{Setup:}
+Chooose random non-zero $G=(G_0,\ldots,G_{n-1})\in \G^n,P\in \G$.\nl
+\textbf{Commitment:} $f\in \F^n$, $\com(f)=\sum_{i<n}f_i G_i$.\nl
+\textbf{Openings:} next slide.
+ \end{frame}
+\begin{frame}
+Given $\cm\in \G,z\in \F^k,v\in \F$ want to prove $\com(f)=\cm$ and $\mle{f}(z)=v$.\nl
+Define the polynomial 
+\[A(\X)\defeq    \mle{f}(\X) \mle{G}(\X) +  \eq(\X,z) \mle{f}(\X) P\]\pause
+ When claim holds:
+\[\sum_{b\in \bin{k}}\mle{f}(b) \mle{G}(b)+\eq(b,z)\mle{f}(b)P\]
+\[= \sumi{n} f_i G_i + \eq(i,z) f_i P = \cm + \mle{f}(z) P\]\pause
+\end{frame}
+\begin{frame}
+$\prv$ and $\ver$ will run sumcheck on $A$ with target value $\cm+vP$.\nl
+At end of sumcheck, $\ver$ needs to evaluate $A(r)=\mle{f}(r)\mle{G}(r) + \eq(r,z)\mle{f}(r)P$ for some $r\in \F^k$.\nl
+\textbf{In IPA:} $\ver$ computes $\eq(r,z),\mle{G}(r)$. $\prv$ \emph{simply sends} $a=\mle{f}(r)$.\nl
+\textit{The strange (and useful) thing:} When $\G$ has hard discrete-log this is sound!\nl
+\emph{Drawback:} Computing $\mle{G}(r)$ is $n$-size MSM for $\ver$!
+ \end{frame}
+ \begin{frame}
+  \frametitle{Mitigation from Halo: defer MSM}
+  Note
+  \[\mle{G}(r) = \sumi{n} \eq(i,r) G_i,\]
+  is the \emph{commitment to $\eq(\X,r)$!}\nl
+  Can use this to reduce multiple evaluation claims $G(r_i)=V_i$ into one.
+ \end{frame}
+
+ \begin{frame}
+  \frametitle{$\prv$ proving correctness of $\mle{G}(r)$}
+\textit{Observation: If we have mlPCS for field-valued multilinears, where all ops on $f$'s vals are $\F$-linear, can also use on \emph{group valued} multilinear $G$. - e.g. Basefold}
+
+ \end{frame}
+ \begin{frame}
+  \frametitle{Correlated agreement theorem:}
+
+ \end{frame}
+\end{document}
