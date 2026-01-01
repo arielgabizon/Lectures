@@ -1,0 +1,422 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz,circuitikz}
+\usepackage[normalem]{ulem}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{xcolor,pgfplots,bm}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+\usepackage[export]{adjustbox}
+\everymath{\color{purple}}
+\definecolor{darkred}{rgb}{0.75, 0, 0.25} 
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\G}{\ensuremath{{\mathbb G}}}
+\renewcommand{\P}{\ensuremath{{\mathbb P}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\bin}[1]{\ensuremath{\set{0,1}^{#1}}}
+\newcommand{\cube}{\ensuremath{\bin^n}}
+
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+% \newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\kzg}[1]{\cm(#1)}
+\newcommand{\open}{\ensuremath{\mathsf{open}}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\rej}{{\mathbf{rej}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+% \newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\zfin}{\ensuremath{z_{\mathrm{final}}}}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}}
+\newcommand{\vk}{\ensuremath{\mathrm{vk} }}
+\newcommand{\repr}{\ensuremath{\mathrm{repr} }}
+\newcommand{\numreads}{\ensuremath{\mathbf{numreads} }}
+\newcommand{\add}{\ensuremath{\mathbf{add} }}
+\newcommand{\adds}{\ensuremath{\mathbf{adds} }}
+\newcommand{\cnt}{\ensuremath{\mathpgoth{t} }}
+\newcommand{\addcount}{\ensuremath{\mathpgoth{at} }}
+\renewcommand{\read}{\ensuremath{\mathbf{read} }}
+\newcommand{\reads}{\ensuremath{\mathbf{reads} }}
+\renewcommand{\note}{\ensuremath{\mathfrak{n} }}
+\newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
+\newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
+\newcommand{\args}{\ensuremath{\mathrm{args} }}
+\newcommand{\stack}{\ensuremath{\mathsf{stack} }}
+\newcommand{\argscur}{\ensuremath{\mathrm{args_{cur}} }}
+\newcommand{\argsnext}{\ensuremath{\mathrm{args_{next}} }}
+% \newcommand{\caulk}{{\mathsf{Caulk}}}
+% \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+\newcommand{\mle}[1]{\ensuremath{\hat{#1}}}
+\newcommand{\eq}{\ensuremath{\mathbf{eq}}}
+\newcommand{\sumi}[1]{\sum_{i< #1}}
+\newcommand{\com}{\ensuremath{\mathsf{com}}}
+ \renewcommand{\polylog}{\ensuremath{\mathrm{polylog}}}
+\newcommand{\X}{\ensuremath{\mathbf{X}}}
+\newcommand{\basefold}{\ensuremath{\color{blue}\mathsf{BaseFold}}}
+\newcommand{\inprod}[2]{\ensuremath{\left\langle #1,#2 \right \rangle}}
+\newcommand{\negl}{\ensuremath{\mathsf{negl}(\lambda)}}
+\newcommand{\mlpcs}{ml-PCS}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{Revisiting the IPA-sumcheck connection}}    % Enter your title between curly braces
+\author{\small{Ariel Gabizon (based on work with Liam Eagen)}\\                 % Enter your name between curly braces
+\tt{\footnotesize{Aztec Labs}                                       } }      % Enter your institute name between curly braces
+\date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+% \begin{frame}
+% tl;dr - we reduce IPA verifier time from linear to polylog using $\basefold$ on a polynomial with coeffs in the group.
+%  \end{frame}
+\begin{frame}
+ \frametitle{Outline}   % Insert frame title between curly braces
+ \begin{itemize}
+  \item A few slides of motivation and context.
+  \item Definitions reg multilinear polynomials.
+  \item PCS landscape and where this work fits in.
+  \item Construction.\nlnp 
+ \end{itemize}
+
+\end{frame}
+\begin{frame}
+ \frametitle{Succinct arguments in a nutshell}   % Insert frame title between curly braces
+ Public program $T$, public output $z$.\\ \pause
+ \vspace{0.4in}
+ Want to prove ``I know input $x$ for program $T$ that generates output $z$.\\ \pause
+ \vspace{0.4in}
+Want proof size and verification time to be much smaller than run time of $T$. \\ 
+{\small (SNARK:=Succinct Non-Interactive Argument of Knowledge)}\\ \pause
+ \vspace{0.4in}
+ Arithmeitization {\small [LFKN,......]}: Reduce claim to claim of form ''I know polynomials that satisfy some identity`` \pause
+\end{frame}
+\begin{frame}
+ \frametitle{Succinct arguments in a nutshell}   % Insert frame title between curly braces
+ Advantage of claims about polynomials is that suffice to check at one random point \\ \pause
+ \vspace{0.4in}
+ But need to solve ''chicken and egg problem``: Prover must commit to polynomials before knowing the challenge point. 
+ \vspace{0.4in}
+ 
+\end{frame}
+
+\begin{frame}
+ \frametitle{Multilinears polynomials}
+Let $\X=(X_1,\ldots,X_k)$. By a ($k$-variate) multilinear polynomial $f(\X)$ over $\F$ we mean of \emph{individual} degree at most one.
+e.g. 
+\[\color{purple}f(\X) = X_1X_2 + X_3-5.\]\pause
+\end{frame}
+\begin{frame}
+
+We define the well-known $\eq$ multilinear polynomial in $2k$ variables. 
+\[\color{purple} \eq(x,y) \defeq \prod_{i=1}^{k} ( x_i y_i + (1-x_i)(1-y_i))\]\pause
+We have for $x,y \in \bin{k}$, $\eq(x,y)=1$ when $x=y$ and $\eq(x,y)=0$ otherwise.\nl
+
+For $z\in \bin{k}$, the functions $L_z(\X)=\eq(z,\X)$ are a ``Lagrange basis'' for multilinears.
+\end{frame}
+\begin{frame}
+\frametitle{vectors and multilinears}
+$n=2^k$.\nlnp
+$f=(f_0,\ldots,f_{n-1})\in \F^n,z\in \F^k$
+\[\color{purple}\mle{f}(z)\defeq \sum_{i<n} \eq(i,z) f_i\]\pause
+ \emph{we identify $i$ with its binary representation.}
+ \end{frame}
+\begin{frame}
+ \frametitle{Polynomial commitment schemes}
+ A PCS is consists of a \nl
+ \begin{itemize}
+\item Procedure \textbf{commit:}  $f\in \F^n \to \com(f)$. \pause
+\item Protocol \textbf{open}$(z\in \F^k,v\in \F,\cm)$:
+$\prv$ convinces $\ver$ that it knows $f$ with $\com(f)=\cm$ and $\mle{f}(z)=v$.
+\end{itemize}
+\end{frame}
+\begin{frame}
+ \frametitle{PCS guarantees}
+ \textbf{binding:} Efficient $\adv$ can't find $f_1\neq f_2$ with $\com(f_1)=\com(f_2)$.\nl
+ \textbf{Knowledge soundness:} If efficient $\adv$ makes $\ver$ accept in $\open(\cm,z,v)$ it ``knows''  $f$ with $\com(f)=\cm$ and $\mle{f}(z)=v$.
+%  
+
+\end{frame}
+\begin{frame}
+ \frametitle{Discrete log hard groups}
+ Additive group $\G$ with $|G|=|F|=r$ for prime $r$.\nl
+ Uniformly chosen $G_0,\ldots,G_{n-1}\in \G$. 
+For any efficient $\adv$ the prob. of finding non-zero $f\in \F^n$ with
+ \[\color{purple}\sum f_i G_i=0\]
+ is \negl.
+\end{frame}
+\begin{frame}
+ \frametitle{The multilinear-PCS landscape }
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|}
+	{\color{black}\textbf{Scheme type}}     \\ \hline
+		\color{black}hash-based {\small [\basefold,WHIR,..]}
+		         \\ \hline
+		\color{black}DL-based(IPA){\small [Bootle et. al,bulletproofs,..]} \\ \hline
+		
+		\color{black} pairing-based {\small[Mercury,Samaritan,Dory,KZH-fold,..]} \\  \hline
+	\end{tabular}
+\end{table} 
+ 
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{The PCS landscape }
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|}
+	{\color{black}\textbf{Scheme type}} & {\color{black}\textbf{Proof size}}    \\ \hline
+		\color{black}hash-based 
+		        & $\color{red}\polylog(n)$ \\ \hline
+		\color{black}DL-based(IPA) & $\color{yellow} \log n$\\ \hline
+		
+		\color{black} pairing-based  & $\color{green}O(1)$\\  \hline
+	\end{tabular}
+\end{table} 
+ 
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{The PCS landscape }
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|}
+	{\color{black}\textbf{Scheme type}} & {\color{black}\textbf{Commitment work}}    \\ \hline
+		\color{black}hash-based 
+		        & \color{green} Encode with ECC over small  field \\ \hline
+		\color{black}DL-based & \color{yellow} MSM in DL-hard group \\ \hline
+		
+		\color{black} pairing-based  & \color{red} MSM in Pairing-friendly group\\  \hline
+	\end{tabular}
+\end{table} 
+ 
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{The PCS landscape }
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|}
+	{\color{black}\textbf{Scheme type}} & {\color{black}\textbf{verification cost}}    \\ \hline
+		\color{black}hash-based 
+		        & \color{black} $\color{black} \polylog$ field work \\ \hline
+		\color{black}DL-based & \color{red}$\color{red}O(n)$-MSM!!\\ \hline
+		
+		\color{black} pairing-based  & \color{black}  $\color{black}O(1)$ pairings and scalar mult\\  \hline
+	\end{tabular}
+\end{table} 
+\end{frame}
+\begin{frame}
+ \frametitle{The PCS landscape }
+\emph{accumulation:= reducing checking several evaluation claims into one.}\nlnp
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|}
+	{\color{black}\textbf{Scheme type}} & {\color{black}\textbf{accumulation cost}}    \\ \hline
+		\color{black}hash-based
+		        &$\color{red} O(\polylog n)$ \\ \hline
+		\color{black}DL-based & $\color{yellow} O(\log n)$\\ \hline
+		
+		\color{black} pairing-based  & $\color{green}  O(1)$ \\  \hline
+	\end{tabular}
+\end{table} 
+\end{frame}
+\begin{frame}
+ \frametitle{This work:}
+\begin{table}[!htbp]\label{table:comparison}
+% \begin{adjustbox}{width=1\textwidth}
+	\begin{tabular}{l|l|}
+	{\color{black}\textbf{Scheme type}} & {\color{black}\textbf{verification cost}}    \\ \hline
+		\color{black}hash-based 
+		        & \color{black} $\color{black} \polylog$ \\ \hline
+		\color{black}DL-based & \sout{\color{red}$\color{red}O(n)$-MSM!!}$\color{black}\to \polylog$ \\ \hline
+		
+		\color{black} pairing-based  & \color{black}  $\color{black}O(1)$ pairings and scalar mult\\  \hline
+	\end{tabular}
+\end{table} 
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{The sumcheck protocol \small\color{green}[LFKN]}
+ $k$-variate poly $A(\X)$ with ind. degree $d$, and ``target value'' $C$.
+ $\prv$ wants to prove
+ \[\color{purple}\sum_{b\in \bin{k}}A(b) = C.\]\pause
+ Sumcheck reduces this with $O(dk)$ communication to checking $A(r)=V$ for random $r\in \F^k$ and some $V$.\nl
+ 
+ 
+ \emph{{\small\color{green} [BCS21]} showed sumcheck makes sense for polys over groups/rings/modules...}                                                
+\end{frame}
+
+\begin{frame}
+ \frametitle{Polynomials over $\G$}
+ \begin{figure}
+  \includegraphics[width=260pt]{gpolys.png}
+\end{figure}
+ 
+\end{frame}
+\begin{frame}
+ \frametitle{MLPCS based on DL hardness as sumcheck {\small \color{green}[Bulletproofs, BCS21]}:}
+\textbf{Setup:}
+Choose random non-zero $G=(G_0,\ldots,G_{n-1})\in \G^n,P\in \G$.\nl
+\textbf{Commitment:} $f\in \F^n$, $\com(f)=\sum_{i<n}f_i G_i$.\nl
+\textbf{Openings:} next slide.
+ \end{frame}
+\begin{frame}
+Given $\cm\in \G,z\in \F^k,v\in \F$ want to prove $\com(f)=\cm$ and $\mle{f}(z)=v$.\nl
+Define the polynomial 
+\[\color{purple}A(\X)\defeq    \mle{f}(\X) \mle{G}(\X) +  \eq(\X,z) \mle{f}(\X) P\]\pause
+ When claim holds:
+\[\color{purple}\sum_{b\in \bin{k}}\mle{f}(b) \mle{G}(b)+\eq(b,z)\mle{f}(b)P\]
+\[\color{purple}= \sumi{n} f_i G_i + \eq(i,z) f_i P = \cm + \mle{f}(z) P\]
+\end{frame}
+\begin{frame}
+$\prv$ and $\ver$ will run sumcheck on $A$ with target value $\cm+vP$.\nl
+At end of sumcheck, $\ver$ needs to evaluate $A(r)=\mle{f}(r)\mle{G}(r) + \eq(r,z)\mle{f}(r)P$ for some $r\in \F^k$.\nl
+ $\ver$ computes $\eq(r,z),\mle{G}(r)$. $\prv$ \emph{simply sends} $a=\mle{f}(r)$.\nl
+\textit{The strange (and useful) thing:} When $\G$ has hard discrete-log this is sound!\nl
+\emph{Drawback:} Computing $\mle{G}(r)$ is $n$-size MSM for $\ver$!
+ \end{frame}
+ \begin{frame}
+  \frametitle{Mitigation from Halo: defer MSM}
+  Given claims $\mle{G}(r_1)=V_1,\mle{G}(r_2)=V_2$.
+  Can reduce them into one using sumcheck:\nl
+  Recall \[\color{purple}\mle{G}(r) = \sum_{b\in \bin{k}} \eq(b,r) \mle{G}(b)\]\nl
+  
+  $\ver$  chooses random $\gamma$.
+  Let $A(X)\defeq (\eq(X,r_1)+\gamma\cdot \eq(X,r_2)) \mle{G}(X)$.\nl
+ 
+ We have 
+   \[\color{purple} \sum_{b\in \bin{k}} A(X) =  \mle{G}(r_1)+\gamma \mle{G}(r_2)  \]\nl
+   We run sumcheck on $A$  with target value $V_1+\gamma V_2$.
+
+  \end{frame}
+ \begin{frame}
+  Reducing $\mle{G}(r_1)\stackrel{?}{=}V_1,\mle{G}(r_2)\stackrel{?}{=}V_2$ to $\mle{G}(r)\stackrel{?}{=}V$:
+ 
+ \begin{enumerate}
+  \item $\ver$  chooses random $\gamma$.
+  \item Let $A(X)\defeq (\eq(X,r_1)+\gamma\cdot \eq(X,r_2)) \mle{G}(X)$.
+  \item 
+   $\prv$ and $\ver$ run sumcheck on $A$  with target value $V_1+\gamma V_2$.\pause
+   \item Claim is reduced to $A(r)=V$, for some   $r\in \F,V'\in \G$.\pause
+   \item $\ver$ computes $\eq(r,r_1),\eq(r,r_2)$ reducing the claim to $\mle{G}(r)=V$ for some $V$.
+  
+ 
+% \item After sumcheck $\ver$ is left with computing $A(r)$ requiring a \emph{single} evaluation $\mle{G}(r)$.
+ \end{enumerate}
+  \end{frame}
+
+ \begin{frame}
+  \frametitle{$\prv$ proving correctness of $\mle{G}(r)$}
+\textit{Observation: If we have mlPCS for field-valued multilinears, where all ops on $f$'s vals are $\F$-linear, can also use on \emph{group valued} multilinear $G$. - e.g. \basefold}
+
+ \end{frame}
+ \begin{frame}
+  \frametitle{FRI/ \basefold}
+\textbf{Idea:} Think of $(G_0,\ldots,G_{n-1})$ as \emph{univariate}
+\[\color{purple}g(X)\defeq \sum_{i=0}^{n-1} G_i X^i\]\pause
+Send a merkle commitment to the values of $g$ on a $2n$-order subgroup.\nl
+Recall we have 
+\[\color{purple}g(X)=g_{even}(X^2)+X g_{odd}(X^2)\]\pause
+Let $r=(r_1,\ldots,r_k)$. ``Fold'' $g$ by $r_1$: 
+\[\color{purple}g_1(X)=(1-r_1)g_{even}(X)+ r_1 g_{odd}(X)\]
+\end{frame}
+\begin{frame}
+Let $r=(r_1,\ldots,r_k)$. ``Fold'' $g$ by $r_1$: 
+\[\color{purple}g_1(X)\defeq (1-r_1)g_{even}(X)+ r_1 g_{odd}(X)\]\pause
+$\prv$ sends Merkle commitment to values of $g_1$ on $n$-order subgroup. \\ \noindent
+$\ver$ checks on random locations $g_1$ is the correct folding.\nl
+
+Now we have
+\[\color{purple}\mle{G}(r)=\mle{g}_1(r_2,\ldots,r_k)\]\pause
+% \textbf{Correlated Agreement Thm:}This is sound for random $r$.\pause
+% 
+% $\basefold$: Interleave with sumcheck to work for \emph{all} $r$
+
+ \end{frame}
+ 
+\begin{frame}
+Now we have
+\[\color{purple}\mle{G}(r)=\mle{g}_1(r_2,\ldots,r_k)\]\pause
+\textbf{Correlated Agreement Thm:}This is sound for random $r$.\pause
+
+$\basefold$: Interleave with sumcheck to work for \emph{all} $r$\pause
+
+\textit{Future work:} Improve using WHIR
+
+ \end{frame}
+% \begin{frame}
+%  ``Fold'' $g$ by $r_1$: 
+% \[\color{purple}g_1(X)\defeq (1-r_1)g_{even}(X)+ r_1 g_{odd}(X)\]
+% $\prv$ sends Merkle commitment to values of $g_1$ on $n$-order subgroup. \\ \noindent
+% $\ver$ checks on random locations $g_1$ is the correct folding.\nl
+% 
+% Now we have
+% \[\color{purple}\mle{G}(r)=\mle{g}_1(r_2,\ldots,r_k)\]\pause
+% \textbf{Correlated Agreement Thm:}This is sound for random $r$.\\ \noindent
+% $\basefold$: Interleave with sumcheck to work for \emph{all} $r$
+% 
+% 
+%  \end{frame}
+ \begin{frame}
+ \begin{figure}
+  \includegraphics[width=260pt]{ipatitle.png}
+\end{figure}
+ See paper on eprint for details. Thanks!
+  
+ \end{frame}
+
+\end{document}
