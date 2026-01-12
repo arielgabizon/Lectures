@@ -1,0 +1,175 @@
+\documentclass[shadesubsections,compress,14pt,mathserif]{beamer}
+\usepackage[danish]{babel}	
+\usepackage{tikz,circuitikz}
+\usepackage[normalem]{ulem}
+\usetikzlibrary{shapes, positioning}
+\usenavigationsymbolstemplate{}
+\usepackage{xcolor,pgfplots,bm}
+\usepackage[absolute,overlay]{textpos}
+\usepackage{amsthm,amsfonts}
+%\usepackage[T1]{fontenc}
+% \usepackage{fullpage}
+% Dokumentets sprog
+%\usepackage{mathtools}
+%\usepackage{pxfonts}
+\usepackage{eulervm}
+\usepackage[export]{adjustbox}
+\everymath{\color{purple}}
+\definecolor{darkred}{rgb}{0.75, 0, 0.25} 
+% Class options include: notes, notesonly, handout, trans,
+%                        hidesubsections, shadesubsections,
+%                        inrow, blue, red, grey, brown
+
+% Theme for beamer presentation.
+%\usepackage{beamertheme} 
+% Other themes include: beamerthemebars, beamerthemelined, 
+%                       beamerthemetree, beamerthemetreebars  
+\newcommand{\minus}{\scalebox{0.5}[1.0]{\( - \)}}
+\newcommand{\adv}{\ensuremath{\mathcal A}}
+\newcommand{\F}{\ensuremath{{\mathbb F}}}
+\newcommand{\G}{\ensuremath{{\mathbb G}}}
+\renewcommand{\P}{\ensuremath{{\mathbb P}}}
+\newcommand{\Z}{\ensuremath{{\mathbb Z}}\xspace}
+\newcommand{\Fclosure}{\ensuremath{{\overline{\mathbb{F}}}_p}}
+\newcommand{\set}[1]{\ensuremath{\left\{#1\right\}}}
+\newcommand{\bin}[1]{\ensuremath{\set{0,1}^{#1}}}
+\newcommand{\cube}{\ensuremath{\bin^n}}
+
+\newcommand{\sett}[2]{\ensuremath{\left\{#1\right\}_{#2}}}
+\newcommand{\enc}[1]{\ensuremath{\left[#1\right ]}}
+% \newcommand{\kzg}[1]{\ensuremath{\enc{#1(x)}}}
+\newcommand{\cm}{\ensuremath{\mathsf{cm}}}
+\newcommand{\kzg}[1]{\cm(#1)}
+\newcommand{\open}{\ensuremath{\mathsf{open}}}
+\newcommand{\verify}[1]{\ensuremath{\mathsf{verify}(#1)}}
+\newcommand{\defeq}{\ensuremath{:=}}
+\newcommand{\helper}{\ensuremath{\mathcal{H}}}
+\newcommand{\ver}{\ensuremath{\mathcal{V}}}
+\newcommand{\prv}{\ensuremath{\mathcal{P}}}
+ \newcommand{\polysofdeg}[1]{\F_{< #1}[X]}
+%  \newcommand{\endoss}{\ensuremath{\mathrm{END}_E}}
+ \newcommand{\hl}[1]{\textbf{\textit{#1}}}
+ \newcommand{\polys}{\F[X]}
+\newcommand{\acc}{{\mathbf{acc}}}
+\newcommand{\rej}{{\mathbf{rej}}}
+\newcommand{\ideal}{\mathbf{I}}
+\newcommand{\gen}{\alpha}
+\newcommand{\spac}{\\  \vspace{0.2in} \noindent}
+\newcommand{\polylog}{\ensuremath{\mathsf{polylog}}\xspace}
+% \renewcommand{\bf}{\begin{frame}}
+% \newcommand{\ef}{\end{frame}}
+%\setbeamersize{text margin left=3mm,text margin right=3mm}  
+\newcommand{\nl}{\\ \pause \vspace{0.2in}}
+\newcommand{\nlnp}{\\ \vspace{0.2in}}
+\newcommand{\stitle}[1]{{\large{\textcolor{purple}{\emph{#1}}}}}
+\DeclareMathAlphabet{\mathpgoth}{OT1}{pgoth}{m}{n}	
+\newcommand{\cq}{\mathpgoth{cq} }
+\newcommand{\cqstar}{\ensuremath{\mathpgoth{cq^{\mathbf{*}} }}\xspace}
+\newcommand{\flookup}{\ensuremath{\mathsf{\mathpgoth{Flookup}}}\xspace}
+\newcommand{\baloo}{\ensuremath{\mathrm{ba}\mathit{loo}}\xspace}
+% \newcommand{\caulkp}{\ensuremath{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}\xspace}
+\newcommand{\caulk}{\ensuremath{\mathsf{Caulk}}\xspace}
+\newcommand{\plookup}{\ensuremath{\mathpgoth{plookup}}\xspace}
+\newcommand{\srs}{\ensuremath{\mathsf{srs}}}
+\newcommand{\tablegroup}{\ensuremath{\mathbb{H}}\xspace}
+\newcommand{\V}{\ensuremath{\mathbf{V} }\xspace}
+\newcommand{\zfin}{\ensuremath{z_{\mathrm{final}}}}
+\newcommand{\rel}{\ensuremath{\mathcal{R}}}
+\newcommand{\vk}{\ensuremath{\mathrm{vk} }}
+\newcommand{\repr}{\ensuremath{\mathrm{repr} }}
+\newcommand{\numreads}{\ensuremath{\mathbf{numreads} }}
+\newcommand{\add}{\ensuremath{\mathbf{add} }}
+\newcommand{\adds}{\ensuremath{\mathbf{adds} }}
+\newcommand{\cnt}{\ensuremath{\mathpgoth{t} }}
+\newcommand{\addcount}{\ensuremath{\mathpgoth{at} }}
+\renewcommand{\read}{\ensuremath{\mathbf{read} }}
+\newcommand{\reads}{\ensuremath{\mathbf{reads} }}
+\renewcommand{\note}{\ensuremath{\mathfrak{n} }}
+\newcommand{\vknext}{\ensuremath{\mathrm{vk_{next}} }}
+\newcommand{\vkcur}{\ensuremath{\mathrm{vk_{cur}} }}
+\newcommand{\args}{\ensuremath{\mathrm{args} }}
+\newcommand{\stack}{\ensuremath{\mathsf{stack} }}
+\newcommand{\argscur}{\ensuremath{\mathrm{args_{cur}} }}
+\newcommand{\argsnext}{\ensuremath{\mathrm{args_{next}} }}
+% \newcommand{\caulk}{{\mathsf{Caulk}}}
+% \newcommand{\caulkp}{{\mathsf{\mathrel{Caulk}\mathrel{\scriptstyle{+}}}}}
+\newcommand{\bigspace}{\ensuremath{\mathbb{V}}}
+\newcommand{\mle}[1]{\ensuremath{\hat{#1}}}
+\newcommand{\eq}{\ensuremath{\mathbf{eq}}}
+\newcommand{\sumi}[1]{\sum_{i< #1}}
+\newcommand{\com}{\ensuremath{\mathsf{com}}}
+ \renewcommand{\polylog}{\ensuremath{\mathrm{polylog}}}
+\newcommand{\X}{\ensuremath{\mathbf{X}}}
+\newcommand{\basefold}{\ensuremath{\color{blue}\mathsf{BaseFold}}}
+\newcommand{\inprod}[2]{\ensuremath{\left\langle #1,#2 \right \rangle}}
+\newcommand{\negl}{\ensuremath{\mathsf{negl}(\lambda)}}
+\newcommand{\mlpcs}{ml-PCS}
+
+%\setbeamersize{text margin left=3mm,text margin right=3mm} 
+\title{\large{Research at Aztec}}    % Enter your title between curly braces
+% \author{\small{Ariel Gabizon (based on work with Liam Eagen)}\\                 % Enter your name between curly braces
+% \tt{\footnotesize{Aztec Labs}                                       } }      % Enter your institute name between curly braces
+% \date{}                    % Enter the date or \today between curly braces
+%\usefonttheme{professionalfonts}
+%\usefonttheme[onlymath]{serif}
+\begin{document}
+\boldmath
+% Creates title page of slide show using above information
+\begin{frame}
+  \titlepage
+\end{frame}
+% \begin{frame}
+% tl;dr - we reduce IPA verifier time from linear to polylog using $\basefold$ on a polynomial with coeffs in the group.
+%  \end{frame}
+\begin{frame}
+ \frametitle{Type of research/theory work at Aztec}   % Insert frame title between curly braces
+ \begin{enumerate}
+  \item General snark research
+  \item Snark research questions relevant to current Aztec system (EC-based).
+  \item specing and proving security of Aztec protocol
+ \end{enumerate}
+\textit{Obviously categories overlap}
+\end{frame}
+\begin{frame}
+ \frametitle{General snark research}
+ \begin{itemize}
+  \item Proximity gaps conjecture - Improve/simplify writeup of CA/MCA proof.
+  \item Research on Fiat-Shamir security
+  \item cryptographic trilinear maps
+ \end{itemize}
+
+\end{frame}
+
+\begin{frame}
+ \frametitle{Snark research questions derived from current Aztec system}
+ \begin{itemize}
+ \item small value, low randomness zero-evading sets:
+ Primes p,s of 256/128 bits respectively. Parameter $n\sim 50$. Let $\F=\F_p$.
+ We choose random $r\in F_s$, define $v=(r,r^2\;\mathrm{mod}\;s, r^n\; \mathrm{mod}\;s)\in \F^n$
+Prove for non-zero $a\in \F^n$ that w.h.p. $<a,v>\neq 0$.\pause
+
+\item Assessing NFS attack progress on pairing-friendly EC's
+ \end{itemize}
+ \end{frame}
+\begin{frame}
+ \frametitle{specing and proving security of Aztec protocol}
+ \begin{itemize}
+ \item stackproofs
+ \item Ongoing formalization of chonk.
+ \end{itemize}
+ \end{frame}
+ \begin{frame}
+  
+ \end{frame}
+\begin{frame}
+ \frametitle{Formats of work with reserachers}
+ \begin{itemize}
+  \item \textit{less intense:} Meet once in 2-3 weeks, discuss what research problems are relevant for us.
+  \item \textit{more intense:}
+ 1-2 days per week. Expect in this case more contribution to the "boring" third category.
+
+ \end{itemize}
+
+\end{frame}
+
+\end{document}
